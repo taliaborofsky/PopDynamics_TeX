@@ -1,0 +1,1130 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\usepackage{xcolor}					% for doing text colors
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb, amsmath}
+
+% Tracking changes: see https://jansoehlke.com/2010/06/strikethrough-in-latex/ for strikethroughs in latex
+\usepackage[normalem]{ulem} % for horizontal strike throughs
+
+\usepackage{tikz, pgfplots} 					% For diagrams
+\usetikzlibrary{shapes, arrows.meta, % arrows.meta lets me do other arrow head types like square, 			
+			quotes, trees,		%see https://gist.github.com/AndiH/f99d9b0cbd3519c27af5b96cfbeff97c
+			calc} 	
+	
+\pgfplotsset{mystyle/.append style={axis x line = bottom, axis y line = left, xlabel = {$x_i$}, ylabel = {$\sigma_i(x_i)$}}}
+
+% Allows theorems and proofs
+\usepackage{amsthm}
+%\newtheorem{theorem}{Theorem}
+
+% So writing derivatives is easier
+\usepackage{physics}
+
+% Commands:
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\D}{\Delta}
+\newcommand{\pc}{\pi_C}
+\newcommand{\pw}{\pi_W}
+\newcommand{\bigo}{\mathcal{O}}
+\newcommand{\lrp}[1]{\left( #1 \right)}
+\newcommand{\lrb}[1]{\left[ #1 \right]}
+\newcommand{\lrc}[1]{\left\{ #1 \right\}}
+\newcommand{\dk}{\delta_K}
+\newcommand{\dpc}{\delta_{\pi_C}}
+\newcommand{\ds}{\delta_s}
+\newcommand{\hr}{\hat{r}}
+\newcommand{\hu}{\hat{u}}
+\newcommand{\hN}{\hat{N}}
+\newcommand{\hw}{\hat{W}}
+\newcommand{\dnp}{\Delta_{N_p}}
+\newcommand{\dr}{\Delta_r}
+\newcommand{\du}{\Delta_{u_r}}
+\newcommand{\dw}{\Delta_W}
+
+\newcommand{\Kfrac}{\frac{K_i}{K_{tot}}}
+\newcommand{\hx}{\hat{x}}
+\newcommand{\hy}{\hat{y}}
+\newcommand{\hp}{\hat{\psi}}
+\newcommand{\hX}{\hat{X}}
+\newcommand{\hY}{\hat{Y}}
+\newcommand{\dY}{\Delta_Y}
+\newcommand{\dX}[1]{\Delta_{X_{#1}}}
+\newcommand{\delp}[1]{\Delta_{\psi_{#1}}}
+\newcommand{\ts}{\tilde{\sigma}}
+\newcommand{\tW}{\tilde{W}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Result}
+
+
+\title{Population Dynamics of Socially Learning Predators}
+\author{Talia Borofsky}
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+\section{Introduction}
+Learning by foragers can have profound effects on their foraging niches and thus the population dynamics of the organisms in these niches \cite{gil2018social}. Many animals, especially but not exclusively vertebrates, can learn from conspecifics how to forage \cite{galef2001social, giraldeau2018social}. Socially acquired information about a forager's food environment can influence its preference for certain food types or foraging patches \cite{galef2001social, slagsvold2011social} and this preference can persist over long timespans, even for an animal's entire life \cite{slagsvold2011social}. Thus social learning can contribute to correlations in behavioral patterns between generations, which may limit plasticity in response to resource depletion or environmental change \cite{gil2018social}. 
+
+It is still unclear which environments select for social learning and how social learning by foragers affects their own population dynamics and those of the resources they use. When food becomes more limited, foragers may benefit by augmenting their diet with food items that are less utilized by others \cite{giraldeau1984group,aljadeff2020competitive}, a phenomenon called the skill pool effect \cite{giraldeau1984group}. For example, although house sparrows can learn socially, in an experiment they tended to use different food cues to locate food from those used by their demonstrators, which all used a single cue \cite{aljadeff2020competitive}. In fact, groups of sparrows that used a mix of cues performed better at finding food than those that all used the same cue. In a previous evolutionary one-consumer, two-resource model with a static environment and constant consumer population size \cite{borofsky2021conformity}, unbiased and conformist social learning was less adaptive as resources became more limited because social learners tended to harvest one resource more intensely than the other; social learning prevented the skill pool effect. Social learning had the same effect in an agent-based model with a changing environment \cite{smolla2015competition}. However, if social learning was payoff-biased and individual learners could not learn about how to forage on more than one type of resource at a time, then social learning was adaptive irrespective of the level of competition for resources \cite{borofsky2021payoff}.
+
+Thus social learning may cause very different population dynamics from those where foragers only used individual learning to find food. Previous models have shown that social learning by prey about predators (as opposed to social learning by foragers/predators, the focus of this paper), such as conspecifics or heterospecifics overhearing each others' alarm calls, decreased the amplitude of fluctuations in predator and prey population sizes \cite{toth2021hidden}. However, since population dynamics are more stable when a forager focuses on harvesting more common food types \cite{van2001alternative, ishii2012learning}, and unbiased social learning causes foragers to have diet preferences that are divorced from the actual quantities of food types available, we expect that unbiased social learning by foragers or predators will result in more unstable population dynamics than would be the case if they only use individual learning to find food. 
+
+In this paper, we investigate the feedback between population dynamics and the evolution of social learning by predators. We construct a one predator, two-prey model and ask 
+\begin{enumerate}
+\item Can social learning cause a predator population to exploit one prey type more than is optimal?
+\item Does social learning increase predator population size?
+\item Are the conditions under which social learning evolves different when the predator population size is static versus dynamic?
+\end{enumerate}
+
+In previous models \cite{borofsky2021conformity, borofsky2021payoff} there was a time delay in the dynamics of the prey (or resource): the amount of resources available by the end of the current generation was determined by predation by adults from the previous generation rather than by adults in the current generation. In this model, we examine whether our answers to the above questions changes if there is no time delay.
+
+%\item When two prey types are available, generalist predators without a strong preference for either disproportionately attack the more common prey species \cite{murdoch1969switching, murdoch1975switching, ishii2012learning}. In parasitoids this pattern has been attributed to the development of search images \cite{ishii2010effect, ishii2012learning}, where a search image is a preference for searching for a specific prey type that results in the predator ignoring or not detecting other prey types \cite{ishii2010effect}. 
+
+
+%Previous studies have examined predator-prey dynamics when the predators cooperate. How cooperation alters dynamics in a one predator-one prey model was addressed in \cite{berec2010impacts}, and the dynamics in a one-predator, two-prey system in which predators cooperate and the two prey populations have a mutualistic relationship in \cite{banerjee2020cooperative}. Social learning can be thought of as a form of cooperation, but there are two main differences between models of social learning and cooperation. Social learning is often vertical, where information is passed from parents to offspring, or oblique, where offspring learn from the parental generation, although not necessarily from their parents \cite{cavalli1981cultural}. Therefore models with vertical or oblique social learning may require a time delay. Furthermore, role models can exhibit different behaviors and a social learner has to choose which demonstrated behavior to adopt. Thus a model of social learning should track the number of individuals exhibiting the various behaviors. 
+
+
+
+
+%We present a one predator, two prey model based on the Rosenzweig-Macarthur predator-prey model (\cite{rosenzweig1963graphical} as described in \cite{turchin2003complex}), in which we incorporate social learning. Our questions are:
+%\begin{enumerate}
+%\item As food becomes more limited, does increasing the probability of social learning decrease or increase equilibrium predator population size? More specifically, as the prey birth rate decreases relative to the predator's maximum kill rate, does increased social learning cause a decrease in the equilibrium biomass of the predator population?
+%\item How does the inclusion of individual and social learning affect population dynamics of predators and prey in relation to models without social learning?
+%\item Apparent competition has been observed in other one-predator two-prey models in which predation intensity increases (nonlinearly) with the prey's population size \cite{van2001alternative}. Does apparent competition emerge when there is only individual learning? And how is this affected by social learning?
+%\end{enumerate}
+\section{The Model}
+
+We construct a one-predator, two-prey system which can also be thought of as a one-consumer, two-resource system. In any given generation, predators are born, they learn from the previous generation's food preferences, and then their survival to adulthood is determined by their success at finding food. A one-predator, two-prey system in which traits evolve requires a model with many dimensions, so to make the analysis more tractable, as in \cite{van2001alternative} we assume that one of the prey types has a constant population size. This prey type will be called the alternate prey (AP) and has a fixed density $R$. The prey type with a changing population size will be called the changing prey (CP), with population size $N_r$, carrying capacity $C_r$, and density relative to the carrying capacity $r = N_r/C_r$. Each prey type requires a different behavior to capture it, with the AP behavior being innate whereas individuals must learn the CP behavior. At any point in time, predators exhibit either the AP behavior or the CP behavior. 
+
+Let $\textbf{B}$ be a social learning locus, where alleles $B$ and $b$ are the resident and mutant alleles, respectively. The resident type learns with probability $K$ whereas the mutant type learns with increased or decreased probability $K + \dk$. The frequency of predators with alleles $B$ and $b$ are $u=u_R + u_r$ and $x = x_R + x_r$, respectively. Subscripts $R$ and $r$ indicate the frequencies of  learning to hunt the AP and CP, respectively. 
+
+As in \cite{henrich1998evolution, wakano2007social, borofsky2021conformity, borofsky2021payoff}, foragers interpret information in their environment about how to find food, which can be accurate, difficult to interpret, or inaccurate. The quality of information is represented by $z$. If $z > 0$, then information is accurate, and as $z$ increases, information about how to find food is easier for the forager to interpret. If $z < 0$, then the information is inaccurate, and the more negative the value of $z$, the more inaccurate the information. If foragers can learn socially, then we assume they tend to learn socially if information is ambiguous and difficult to interpret, i.e. $z$ is close to $0$. We further assume that the information quality in the environment $z$ has a Gaussian distribution with mean $\mu$ and standard deviation $\sigma = 1$, where $f(z)$ is the probability density function. The probabilities that individually learning results in a successful foraging behavior, i.e. learning the correct behavior to hunt the CP, using social information to learn a foraging behavior, and individual learning resulting in a foraging behavior that is not accurate, are
+\begin{subequations} \label{learningprobs}
+\begin{align}
+\pc &= \int_s^\infty f(z) dz \\
+K &= \int_{-s}^s f(z) dz \\
+\pw &= \int_{-\infty}^{-s} f(z) dz,
+\end{align}
+\end{subequations}
+respectively, where $s$ is the social learning cutoff. Carriers of allele $B$ have social learning cut-off $s$ and learning probabilities $\pc$, $K$, and $\pw$. Carriers of the mutant allele $b$ have social learning cut-off $s + \ds$ and learning probabilities $\pc + \dpc, K + \dk,$ and $\pw + \delta_{\pi_W}$ which result from substituting $s + \ds$ instead of $s$ into Eqs. \ref{learningprobs} a - c. Note that $\dpc + \dk + \delta_{\pi_W} = 0$.
+The probability that a carrier of allele $B$ adopts behavior CP is
+\begin{equation} \label{L_u}
+L_u(p_r,r) = Kp_r + \frac{r}{r+R} \pc,
+\end{equation}
+where $p_r = u_r + x_r$ is the total frequency of individuals hunting CP, the term $K p_r$ is the frequency of adopting behavior CP from unbiased social learning, and $\frac{r}{r + R} \pc$ is the probability of adopting behavior $CP$ from individual learning. The probability that a carrier of allele $B$ adopts behavior $AP$ is $1 - L_u(p_r,r)$. The probability that a carrier of the mutant allele $b$ adopts behavior CP is
+\begin{equation}
+L_x(p_r,r) = (K + \dk) p_r + \frac{r}{r + R} (\pc + \dpc) = L_u(p_r,r) + \dk p_r + \dpc \frac{r}{r+R},
+\end{equation}
+and the probability that a carrier of $b$ adopts behavior $AP$ is $1 - L_x(p_r,r)$.
+
+The life history of predators is split into a juvenile and an adult stage. After birth, the juveniles learn how to find food at the frequencies
+\begin{subequations} \label{rec_juveniles}
+\begin{align}
+\tilde{u}_r &= u L_u(p_r,r) \\
+\tilde{u}_R &= u (1 - L_u(p_r,r)) \\
+\tilde{x}_r &= x L_x(p_r,r) \\
+\tilde{x}_R &= x (1 - L_x(p_r,r)).
+\end{align}
+\end{subequations}
+
+Then, juveniles consume food in order to pass to the adult stage. The frequencies of individuals surviving to adulthood and exhibiting behaviors CP or AP are $u_r'$ and $u_R'$, respectively, if carrying allele $B$, and $x_r'$ and $x_R'$, respectively, if carrying allele $b$. Consuming food provides a survival fitness benefit, which is $r$ for the CP and $R$ for the AP, and thus the survival fitness of those that learn how to hunt the CP and AP are $1 + r$ and $1 +R$ respectively. The recursions are
+
+\begin{subequations} \label{recursions}
+\begin{align}
+W u_r' &= \tilde{u}_r (1 + r) = u L_u(p_r,r) (1+r)\\
+W u_R' &= \tilde{u}_R (1 + R) = u(1 - L_u(p_r,r))(1 + R)\\
+Wx_r' &= \tilde{x}_r(1+r)  = xL_x(p_r,r)(1+r)\\
+Wx_R' &= \tilde{x}_R(1+R) = x(1 - L_x(p_r,r))(1 + R)
+\end{align}
+\end{subequations}
+where $W$, the mean population fitness, is the sum of the right sides in Eqs. (\ref{recursions}a - \ref{recursions}d), i.e.,
+\begin{align*}
+W &= 1 + r(\tilde{u}_r + \tilde{x}_r)+ R(\tilde{u}_R + \tilde{x}_R), \\
+\intertext{and after substituting \eqref{rec_juveniles} for $\tilde{u}_r, \tilde{x}_r, \tilde{u}_R,$ and $\tilde{x}_R$,}
+W&= 1 + r \lrb{u L_u(p_r,r) + x \lrp{ L_u(p_r,r) + \dk p_r + \dpc \frac{r}{r+R} }} \\
+& \hspace{1cm}+ R\lrb{u(1 - L_u(p_r,r)) + x \lrp{ 1 - L_u(p_r,r) - \dk p_r + \dpc \frac{r}{r+R} }}, 
+\intertext{and since $u + x = 1$,}
+W&= 1 + r \lrb{L_u(p_r,r) + x \lrp{ \dk p_r + \dpc \frac{r}{r+R}} } \\
+&\hspace{1cm} + R \lrb{ 1 - L_u(p_r,r) -x \lrp{ \dk p_r + \dpc \frac{r}{r+R} }}, \\
+ &= 1 + R + (r - R) \lrb{ L_u(p_r,r)+ x \lrp{ \dk p_r + \dpc \frac{r}{r+R}} }.
+\end{align*}
+
+The population size $N_p$ of the predators, once they reach the adult stage, is
+\begin{equation} \label{rec_N_p}
+N_p' = N_p \lrb{W - \delta}
+\end{equation}
+where $\delta$ is the death rate of predators. At equilibrium, either $N_p = 0$ or $W - \delta = 1$, which means that
+\begin{equation} \label{hN_p}
+ R+ (r - R) \lrb{L_u(p_r,r) + x\lrp{ \dk p_r + \dpc \frac{r}{r+R} }}- \delta = 0
+\end{equation}
+and thus the equilibrium density of $CP$ equals that of $AP$: $\hr = R$ only if $R = \delta$. If $R > \delta$, then also $\hr < R$, and if $R < \delta$, then $\hr > R$.  
+
+As for the dynamics of the resource populations, I'll present two models: one in which resources are depleted and learning occurs at the same time (no time delay), and one in which resource depletion occurs before the new generation learns how to find food (the time delay model). For both models, the population size of the AP is less than the maximum possible relative density of the CP, i.e. $R < 1$.
+
+%\red{I'm not sure how to reduce the number of parameters for the prey equations below. It would help if the predator population had some sort of 'maximum' size, e.g. if at a certain density predators somehow interfere with each other beyond competing for food. This could look like
+%\begin{equation}
+%N_p' = \frac{N_p(1 - \delta + W)}{1 + cN_p}
+%\end{equation}
+%for $c$ a constant determining density-dependence, which is loosely based off of \cite{din2013dynamics}. Then $\hN_p = \frac{W - d}{c}$
+%} 
+\subsection{No time delay}
+Prey in the current generation is depleted as the juvenile predators survive to adulthood. Similarly to \cite{borofsky2021conformity, din2013dynamics, asmussen1977density, roughgarden1979theory}, the population size of CP after foragers reach adulthood is
+\begin{equation} \label{N_t}
+N_r' = \frac{N_r(e - f N_p L_{total}) }{c + d N_r}
+\end{equation}
+where  $e, f, c$, and $d$ are nonnegative constants and
+\begin{equation}
+L_{total} = u L_u(p_r,r) + x L_x(p_r,r)
+\end{equation}
+is the total frequency of adult foragers hunting for the CP in the current generation. The constant $d$ controls density dependence, $e - c$ is population growth, and $f$ is the effect of predation. If there is no predation on the $CP$, i.e. $f N_p L_{total} = 0$, then the steady-state size of the CP, $\hat{N_r}$, is at its maximum, or carrying capacity, which is $C_r = \frac{e - c}{d}$, assuming $e > c$. We assume $e >c$ and define $r$, as mentioned earlier, to be the density of the CP relative to its carrying capacity, i.e. $r = \frac{N_rd}{e-c}$. Then substituting into \eqref{N_t}, we have
+\begin{equation}
+r' = \frac{r(e-f N_p L_{total})}{c + r(e-c)}.
+\end{equation}
+Let $\eta = \frac{e}{c} - 1$ be the CP density growth constant and let $\beta = \frac{f}{c}$ be the prey depletion by predators constant. Then
+\begin{equation} \label{r_nodelay}
+r' = \frac{r(1 + \eta - \beta N_p L_{tot})}{1 + r \eta}.
+\end{equation}
+
+The equilibrium density $\hr$ is $\hr = 0$ or the solution to the equation
+\begin{equation} \label{r_hat_nodelay}
+r = 1 - \frac{\beta}{\eta}N_p L_{tot},
+\end{equation}
+recalling that $L_{tot}$ is a function of $r$. Since $0 \leq L_{tot} \leq 1$, if there exists at least one nonzero prey population size equilibrium, then $N_p < \eta/\beta$. To reduce the number of parameters, assume $\eta = 1$. 
+
+\subsection{Time delay}
+Here, prey in the current generation is depleted by adults from the previous generation. The population size of CP present after foragers of the current generation reach adulthood is
+\begin{equation} \label{N_t_2}
+N_r' = \frac{N_r(e - f N_p p_r)}{c+dN_r}
+\end{equation}
+which is similar to Eq. \eqref{N_t} except the predation term $f N_p p_r$ replaces $r N_p L_{tot}$. The constants $e$, $f$, $c$, and $d$ are nonnegative constants with the same meaning as in \eqref{N_t}. Using the same logic as was used to derive \eqref{r_nodelay}, the density of CP relative to its carrying capacity after foragers in the current generation reach adulthood is
+\begin{equation} \label{r_time_delay}
+r' = \frac{r(1 + \eta - \beta N_p p_r)}{1 + r \eta}
+\end{equation}
+and thus the equilibrium density is $\hr = 0$ or $\hr = 1 - \beta \hN_p \hat{p}_r$, again assuming $\eta = 1$.
+
+
+\section{Results}
+\subsection{Equilibria, All individuals carry allele $B$}
+We assume that population and behavior frequency dynamics are much faster than evolutionary dynamics. Thus initially all predators are of type $B$, and a small number of type $b$ predators are introduced after the system reaches equilibrium. Before $b$ is introduced,
+\begin{subequations} \label{systal_allB}
+\begin{align}
+N_p'&= N_p(W - \delta) \\
+W u_r' &= L_u(u_r,r)(1+r) 
+\end{align}
+\end{subequations}
+where
+\begin{equation} \label{W_allB}
+W = 1 + R + (r-R) L_u(u_r,r).
+\end{equation}
+If there is no time delay,
+\begin{equation} \label{r_allB_nodelay}
+r' = \frac{r (2 - \beta N_p L_u(u_r, r))}{1+r}
+\end{equation}
+and if there is a time delay,
+\begin{equation} \label{r_allB_delay}
+r' = \frac{r(2 - \beta N_p u_r)}{1+r}.
+\end{equation}
+At equilibrium $\hN_p = 0$ or $\hw = 1 + \delta$, so if $\hN_p > 0$ and $\hr \neq R$ then
+\begin{equation} \label{delta_eq}
+L_u(\hu_r,\hr) = \frac{\delta-R}{\hr-R},
+\end{equation}
+which is valid if $\hr \leq \delta < R$ or $R < \delta \leq \hr$.
+%and since $0 \leq L_u(\hu_r,\hr) \leq 1$, $\delta \leq \hr \leq 1$. \red{Should this be in methods (the part where I describe the model) since this puts a limit on a constant?)}
+
+%\begin{lemma}
+%If $R > \delta$ then the dynamics do not reach an equilibrium.
+%\end{lemma}
+%\begin{proof}
+%(Proof by contradiction) Say $R > \delta$ and $\hr$ is an equilibrium. Then from \eqref{delta_eq}, $\delta \leq \hr < R$ because $0 < L_u(\hu_r, \hr) \leq 1$. \red{This is wrong. $\delta > \hr$}However, then
+%\begin{align*}
+%\hw &= 1 + R + (\hr - R) L_u(\hu_r, \hr) \\
+%& = 1 + R(1 - L_u(\hu_r,\hr)) + \hr L_u(\hu_r, \hr) \\
+%\end{align*}
+
+%\end{proof}
+
+
+\begin{lemma}
+If $R < \delta$, then there is one nonzero $\hu_r, \hr, \hN_p$ equilibrium if $\beta > 0$, and
+\begin{equation}
+\pc(1-R) + (\delta-R)(1+R) \lrp{ \frac{2K}{1+\delta} -1 } >0.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+If $\hr > 0$ we must have $\hr \geq \delta$ so that \eqref{delta_eq} satisfies the requirement that $0 < L_u(\hu_r, \hr) \leq 1$.
+Substituting \eqref{delta_eq} for $\L_u(\hu_r, \hr)$ and $W = 1 + \delta$ into \eqref{systal_allB}c,
+\begin{equation}\label{hu_r}
+\hu_r = L_u(\hu_r, \hr) \frac{1 + \hr}{1 + \delta} = \frac{(\delta - R)(1+\hr)}{(\hr-R)(1+\delta)}.
+\end{equation}
+If $R < \delta \leq \hr$, then since $0 < \hu_r \leq 1$, \eqref{hu_r} is legitimate if
+$$
+\frac{(\delta - R)}{(\hr-R)} \leq \frac{1 + \delta}{1+\hr}
+$$
+which can be rearranged and simplified to
+$$
+(\delta - \hr)(1 + R) \leq 0
+$$
+which is true because $\hr \geq \delta$.
+
+
+Thus at the equilibrium, 
+\begin{align}
+ K \frac{(\delta - R)(1+r)}{(r-R)(1+\delta)} + \pc \frac{r}{r+R} = \frac{\delta - R}{r-R}
+\end{align}
+which can be rewritten as $Q_r(r) = 0$ where 
+\small
+\begin{equation} \label{Q_r}
+Q_r(r) = r^2 \lrb{\pc + \frac{K(\delta-R)}{(1+\delta)} } +r \lrb{ (\delta-R) \lrp{ \frac{K(1+R)}{1+\delta}-1}- R \pc} -R(\delta-R)\lrp{1 - \frac{K}{1+\delta}}.
+\end{equation}
+\normalsize
+Since 
+$$
+Q_r(0) = -R(\delta-R) \lrp{1 - \frac{K}{1+\delta}} < 0,
+$$
+there is an equilibrium $\hr \geq \delta$ if $Q_r(1) \geq 0$ and $Q_r(\delta) \leq 0$, where
+\begin{equation} \label{Q_r_1}
+Q_r(1) = \pc (1 - R) + (\delta - R)(1 +R) \lrp{\frac{2K}{1+\delta}-1} 
+\end{equation}
+and \red{(I showed all my steps so it's easier to check)}
+\begin{align} \label{Q_r_delta}
+Q_r(\delta) &= (\delta-R) \lrb{\frac{K \delta^2}{1+\delta} + \delta \lrp{ \frac{K(1+R)}{1+\delta} - 1 } - R \lrp{1 - \frac{K}{1+\delta}} } + \delta^2 \pc - R \pc \delta \notag \\
+&= (\delta-R) \lrb{ \frac{K\delta^2}{1+\delta} - (R + \delta) \lrp{1 - \frac{K}{1+\delta}} + \frac{KR \delta}{1+\delta} + \pc \delta } \notag \\
+&= (\delta-R) \lrb{ (\delta + R) \lrp{ \frac{K\delta}{1+\delta} - 1 + \frac{K}{1+\delta} } + \pc \delta } \notag \\
+&= (\delta - R) \lrb{ (\delta + R) \lrp{ \frac{K\delta + K}{1+\delta} - 1} + \pc \delta } \notag \\
+&= (\delta-R) \lrb{(\delta+R)(K-1) + \pc \delta} \notag \\
+&= (\delta - R) \lrb{ \delta(K + \pc - 1) + R(K-1)} \notag \\
+&= (\delta - R) \lrb{- \pw \delta + R(K - 1)}.
+\end{align}
+However, because $(\delta - R) > 0$ and $- \pw \delta + R(K-1) \leq 0$, $Q_r(\delta) \leq 0$, so there is an equilibrium $\delta \leq \hr \leq 1$ if $Q_r(1) \geq 0$.
+
+To complete the proof, we must show there is an equilibrium predator population size $\hN_p$. If there is no time delay, i.e. $\hr = 1 - \beta \hN_p L_u(\hu_r, \hr)$, then if $\beta > 0$,
+\begin{equation}
+\hN_p = \frac{(1 - \hr)(\hr-R)}{\beta(\delta-R)}
+\end{equation}
+where $\hu_r$ is defined in \eqref{hu_r} and $\hr$ is the larger root of $Q_r(r)$.
+If there is a time delay, i.e. from \eqref{r_time_delay} $\hr = 1 - \beta \hN_p \hu_r$, then if $\beta > 0$ 
+\begin{equation}
+\hN_p = \frac{1 - \hr}{\beta \hu_r}
+\end{equation}
+
+\end{proof}. 
+
+\begin{lemma}
+If $R > \delta$ and $Q''(r) < 0$, then there is no nonzero $\hr$ equilibrium.
+\end{lemma}
+\begin{proof}
+
+If $R > \delta$, then we need $\hr \leq \delta$, which means that we want to show that $Q_r(r)$ has a root between $r = 0$ and $r = \delta$. Since
+$$
+Q_r(0) = -R(\delta - R) \lrp{1 - \frac{K}{1+\delta}} \geq 0,
+$$
+there is a nonzero $\hr$ equilibrium if $Q_r(\delta) \leq 0$. However, from \eqref{Q_r_delta}, $Q_r(\delta) \geq 0$ because $R > \delta$. 
+
+\end{proof}
+
+\begin{lemma}
+If $R > \delta$ and $Q_r'' > 0$, there is one $\hr$ equilibrium if $Q_r(\delta) < 0$.
+\end{lemma}
+This follows because $Q_r(0) \geq 0$.
+
+\begin{lemma}
+If $R > \delta$, $Q_r'' > 0$, and $Q_r(\delta) > 0$, there can either be two or zero $\hr$ equilibria if $Q_r'(0) < 0$ and $Q_r'(\delta) > 0$. Otherwise there does not exist $\hr > 0$.
+
+\end{lemma}
+
+
+\begin{lemma}
+If $\hN_p = \hr = 0$, then $\hu_r = 0$. 
+\end{lemma}
+In this case $\hw = 1 + R(1 - L(\hu_r, \hr))$ and $L(\hu_r, \hr) = K \hu_r$. Then since $\hw \hu_r = L(\hu_r, \hr)$, $\hu_r = 0$ or $\hw = K$. Say, up to contradiction, that $\hu_r > 0$ and $\hw = K$. Then
+\begin{align}
+K &= 1 + R(1 - K\hu_r) \\
+\hu_r &= \frac{1}{K} \lrp{1 - \frac{K-1}{R}} > 1
+\end{align}
+which is not possible. 
+ 
+
+\begin{lemma}
+If $\hN = 0$ and $\hr = 1$, then there is one possible equilibrium frequency of predators hunting the CP, and it is $\hu_r > 0$. \red{Maybe this makes sense if we say N is very small? Basically need to find a way to find if the population goes extinct without depleting the CP.}
+\end{lemma}
+Here, $\hw = 1+R+(1-R)L(\hu_r,\hr)$ and $L(\hu_r, \hr) = K \hu_r + \frac{\pc}{1+R}$. Then since $\hw \hu_r = 2 L(\hu_r,\hr)$,
+\begin{align}
+u_r \lrb{1 + R + (1-R)\lrp{Ku_r + \frac{\pc}{1+R}}} = 2 \lrp{K u_r + \frac{\pc}{1+R}} \\
+\intertext{which simplifies to the quadratic equation}
+Q_u(u_r) = u_r^2 K(1-R) + u_r\lrb{ 1+R + (1-R) \frac{\pc}{1+R} -2K} - 2 \frac{\pc}{1+R} = 0.
+\end{align}
+Thus $\hu_r$ is the larger root of $Q_u(u_r)$ because $Q_u(0) < 0$ and
+$$
+Q_u(1) = -(1-R)\lrp{K+\frac{\pc}{1+R}} (1+R) > 0.
+$$
+
+\begin{lemma}
+If all populations are extant at equilibrium, i.e. $\hN_p, \hr, R > 0$, then the equilibrium CP density can only be the same as that of the alternate prey, i.e. $\hr = R > 0$, if and only if $R = \delta$.
+\end{lemma}
+\begin{proof}
+If $\hr = R$, then $W = 1+R$. Then, since $N_p' = N_p(W - \delta)$, either $\hN_p = 0$ or $R = \delta$. For the other side of the proof, if $R = \delta$, then from \eqref{W_allB},
+$$
+0 = (r - \delta) L(\hu_r, \hr)
+$$
+which is true if $L(\hu_r, \hr) = 0$, in which case $\hu_r = \hr = 0$, or if $r = \delta$.
+\end{proof}
+
+Note that if $\hr = R = \delta$, then 
+$$
+(1 + \delta)\hu_r = L(\hu_r, \hr)(1+\delta)
+$$
+ so 
+$$
+\hu_r = K \hu_r + \pc/2
+$$
+and thus
+$$
+\hu_r = \frac{1}{2} \lrp{ \frac{\pc}{1-K} }.
+$$
+If there is no time delay, then the equilibrium population size is
+$$
+\hN_p = \frac{1-\delta}{\beta L(\hu_r, \hr)}
+$$
+which simplifies to
+$$
+\hN_p = \frac{2(1-\delta)(1-K)}{\beta \pc}.
+$$
+If there is a time delay, the equilibrium forager population size is
+$$
+\hN_p = \frac{1 - \delta}{\beta \hu_r}
+$$
+which also simplifies to
+$$
+\hN_p = \frac{2(1-\delta)(1-K)}{\beta \pc}.
+$$
+ % CHECK AND PUT THIS IN If $\delta < R$, then $Q_r(0) > 0$ and there is an equilibrium $0 < \hr \leq 1$, which is the smaller root of $Q_r(r)$, if $Q_r(1) < 0$. .
+
+
+% \red{Need to figure out what happens if $R < \delta$ and $\beta = 0$.}
+
+
+
+
+\subsection{Internal Stability}
+
+We first check whether the equilibrium $(\hu_r, \hr, \hN)$ with $\hN > 0$ is stable with respect to perturbations in $u_r, r$, or $N$. Near this equilibrium,
+\begin{align}
+L_u(\hu_r + \du,\hr+\dr) &= K( \hu_r + \du) + \frac{\hr+\dr}{\hr+\dr+R} \pc \\
+&= L_u(\hu_r, \hr) + \D_L
+\end{align}
+where
+\begin{equation}\label{D_L}
+\D_L \approx K \du + \frac{R \pc \dr}{(\hr + R)^2}
+\end{equation}
+because
+$$
+\frac{\hr + \dr}{\hr + \dr + R } \approx (\hr + \dr) \lrp{1 - \frac{\dr}{\hr + R}} \lrp{\frac{1}{\hr + R}} \approx \frac{\hr}{\hr + R} + \frac{\dr}{\hr + R} \lrp{1 - \frac{\hr}{\hr + R}}
+$$
+and $1 - \frac{\hr}{\hr + R} = \frac{R}{\hr + R}$.
+The mean population fitness near the equilibrium is
+\begin{align}
+W + \dw &= 1 + R + (\hr + \dr - R) L_u(\hu_r + \du,\hr+dr)\notag \\
+\dw & \approx \D_L (\hr - R) + \dr L_u(\hu_r, \hr) \notag
+\intertext{which simplifies to}
+\dw &= K \du + \dr \lrb{ L(\hu_r, \hr) + \frac{R \pc (\hr - R)}{(\hr + R)^2} }.
+\end{align}
+
+The predator population size near equilibrium is
+$$
+\hN_p + \dnp' = (\hN_p + \dnp)(\hw + \dw - \delta) 
+$$
+where $\hw - \delta = 1$ so
+\begin{align} \label{D_N}
+\dnp' &\approx \D_W \hN_p + \dnp  \notag\\
+&=  \hN_p \lrc{ K \du + \dr \lrb{ L(\hu_r, \hr) + \frac{R \pc (\hr - R)}{(\hr + R)^2} }} + \dnp.
+\end{align}
+
+
+The frequency of predators exploiting the CP near the equilibrium is
+\begin{align*}
+\hu_r + \du' &= \frac{1}{\hw + \dw} (L(\hu_r, \hr) + \D_L)(1 + \hr + \dr) \\
+\intertext{and since $\frac{1}{\hw + \dw} \approx \frac{1}{\hw} \lrp{1 - \frac{\dw}{\hw}}$,}
+\hu_r + \du' & \approx \frac{1}{\hw} \lrp{1 - \frac{\dw}{\hw}} \lrb{ L(\hu_r, \hr)(1+\hr)  + \dr L(\hu_r, \hr) + \D_L (1+\hr)}\\
+&= \lrp{1 - \frac{\dw}{\hw}} \lrb{ \hu  + \dr \frac{L(\hu_r, \hr)}{\hw} + \D_L \frac{(1+\hr)}{\hw}},\\
+\intertext{and thus the perturbation from equilibrium is}
+\du' &\approx \dr \frac{L(\hu_r, \hr)}{\hw} + \D_L \frac{(1+\hr)}{\hw} - \frac{\hu}{\hw} \dw,
+\end{align*}
+which, after substituting \eqref{D_L} for $\D_L$ and $\hw = 1 + \delta$, becomes
+\begin{align} \label{D_u}
+\du'  &= \du \lrp{\frac{K}{1+\delta}} \lrb{1 + \hr - \hu_r(\hr-R)} \notag \\
+&\ \ + \dr\lrc{\frac{L(\hu_r, \hr)}{1+\delta}(1-\hu_r) + \frac{\pc R}{(1+\delta)(\hr+R)^2} \lrb{1 + \hr - \hu_r(\hr-R)}}
+\end{align}
+
+\subsubsection{Internal Stability, no time delay}
+
+The CP relative density near equilibrium is
+\begin{align*}
+\hr + \dr' &= \frac{(\hr + \dr)\lrb{2 - \beta (\hN + \dnp)(L(\hu_r, \hr) + \D_L)}}{1 + \hr + \dr} \\
+&\approx \frac{(\hr + \dr) \lrp{2 - \beta \hN L(\hu_r, \hr) -\beta \dnp L(\hu_r, \hr) - \beta \hN \D_L}}{1 + \hr + \dr}.
+\end{align*}
+To simplify, note that $\frac{1}{1 + \hr + \dr} \approx \frac{1}{1 + \hr} \lrp{1 - \frac{\dr}{1 + \hr}}$. Then
+\begin{align*}
+\hr + \dr' &= \lrp{\hr - \frac{\hr \beta (\dnp L(\hu_r, \hr) + \hN \D_L)}{1+\hr} + \dr \frac{2 - \beta \hN L(\hu_r, \hr)}{1+\hr}} \lrp{1 - \frac{\dr}{1+\hr}} \\
+\intertext{but $\frac{2 - \beta \hN L(\hu_r, \hr)}{1+\hr} = 1$ so}
+\hr + \dr' &= \lrp{ \hr  - \frac{\hr \beta (\dnp L(\hu_r, \hr) + \hN \D_L)}{1+\hr} + \dr } \lrp{1 - \frac{\dr}{1+\hr}} \\
+\dr' &\approx -\dr \frac{\hr}{1+\hr} - \frac{\hr \beta (\dnp L(\hu_r, \hr) + \hN \D_L)}{1+\hr} + \dr \\
+\end{align*}
+and substituting \eqref{D_L} for $\D_L$ gives
+\small
+\begin{equation} \label{D_r_nodelay}
+\dr'  \approx \lrp{\frac{1}{1+\hr} - \frac{\hN \hr \beta R \pc}{(1+\hr)(\hr+R)^2} } \dr - \dnp \frac{\hr \beta L(\hu_r, \hr)}{1+\hr} - \du \frac{K\hN \hr \beta}{1+\hr} .
+\end{equation}
+\normalsize
+
+The Jacobian formed by Eqs \eqref{D_N}, \eqref{D_u}, and \eqref{D_r_nodelay}, is of the form
+\begin{equation}
+J^* = \begin{pmatrix}
+1 & a & b \\
+0 & c & d \\
+e & f & g,
+\end{pmatrix}
+\end{equation}
+\red{I should probably use different variable names}, where $a$, $b$ are the coefficients of $\du$ and $\dr$, respectively, from \eqref{D_N}, $c$ and $d$ are the coefficients of $\du$ and $\dr$, respectively, from \eqref{D_u}, and $e, f,$ and $g$ are the coefficients of $\dnp, \du,$,and $\dr$, respectively, from \eqref{D_r_nodelay}. Using Sympy, I found the eigenvalues of $J^*$. Let
+\begin{subequations}
+\begin{align}
+\xi_1 &= -c -g -1\\
+\xi_2 &= be - cg - c + df - g \\
+\xi_3 &= -ade + bce - cg + df \\
+\xi_4 &= \sqrt{ -4(3 \xi_2 + \xi_1^2)^3 + (27 \xi_3 + 9 \xi_1 \xi_2 + 2\xi_1^3)^2 } \\
+\xi_5 &= \sqrt[3]{\frac{27}{2} \xi_3 + \frac{1}{2} \xi_4 + \frac{9}{2} \xi_1 \xi_2 + \xi_1^3}.
+\end{align}
+\end{subequations}
+The eigenvalues of $J^*$ are
+\begin{subequations}
+\begin{align}
+\lambda_1 &= - \frac{1}{3} \lrp{ \xi_1 + \frac{3 \xi_2 + \xi_1^2}{\xi_5} + \xi_5} \\
+\lambda_2 &= \frac{1}{3} \lrp{  \xi_1 + \frac{3 \xi_2 + \xi_1^2}{2\xi_5} + \frac{1}{2}\xi_5} + \frac{i \sqrt{3}}{6} \lrp{\frac{3\xi_2 + \xi_1^2}{\xi_5} - \xi_5 } \\
+\lambda_3 &= \frac{1}{3} \lrp{  \xi_1 + \frac{3 \xi_2 + \xi_1^2}{2\xi_5} + \frac{1}{2}\xi_5} - \frac{i \sqrt{3}}{6} \lrp{\frac{3\xi_2 + \xi_1^2}{\xi_5} - \xi_5 }.
+\end{align}
+\end{subequations}
+
+
+\red{HOW DO I CHECK WHETHER THE POPULATION WILL GO EXTINCT?}
+\subsubsection{Local Stability with No TIme Delay}
+
+%and \eqref{freqs_allB}a - \eqref{freqs_allB}b at equilibrium are
+%\begin{subequations}
+%\begin{align}
+%(1 + \delta) u_r &= L_u(u_r,r)(1+r) \\
+%(1 + \delta)(1-u_r) &= L_u(u_r)(1+R).
+%\end{align}
+%\end{subequations}
+%
+%\subsubsection{Equilibria, no time delay}
+%The resource population dynamics are
+%\begin{equation}
+%r' = \frac{r(2 - \beta N_p L_u(u_r,r))}{1 + \eta r} 
+%\end{equation}
+%because all predators are $B$, but at equilibrium 
+%\begin{equation}
+%r = 1 - \beta \hN_p L_u(\hu_r, r).
+%\end{equation}
+%
+%IF DELTA IS R...
+%
+%OTHERWISE...
+%
+%Substituting \eqref{delta_eq} for $\L_u(\hu_r, \hr)$, the equilibrium $\hN_p$ is
+%
+%which can also be rearranged into the equation $Q^{(1)}_r(r) = 0$ where
+%\begin{equation} \label{Q_1_r}
+%Q^{(1)}_r(r) = r^2 -r(1+R) + R + \beta \hN_p(\delta-R).
+%\end{equation}
+%The $r^*$ that minimizes $Q^{(2)}_r(r)$ is $r^* = \frac{1+R}{2},$ at which 
+%$$
+%Q^{(2)}_r(r^*) = -\frac{1}{4}(1 - R)^2 + \beta \hN_p(\delta - R),
+%$$ 
+%and thus $Q^{(2)}_r(r)$ has two roots if 
+%$$
+%\hN_p < \frac{(1-R)^2}{4\beta(\delta - R)}.
+%$$
+%which also means that for $\hr>0$ to exist, $\delta > R$. If $\delta < R$, then the forager population can grow infinitely even if the CP is depleted, so it will deplete the CP.
+%
+%Furthermore, the equation
+%\begin{equation} \label{hr_notsolved}
+%r = 1 - \beta N_p (K u_r + \frac{r}{r+R} \pc)
+%\end{equation}
+%can be rearranged into the quadratic equation $Q^{(2)}_r(r) = 0$ where 
+%\begin{equation}\label{Q_r_nodelay_2}
+%Q_r^{(2)}(r) = r^2 + r\lrb{R - 1 + \beta N_p (K\hu_r + \pc)} + R \lrp{-1 + \beta \hat{N}_p K \hu_r }.
+%\end{equation}
+%
+%Since $Q_r^{(1)}(r) = Q_r^{(2)}(r) = 0$,
+%\begin{equation}
+%\hr = \frac{2R - \beta \hN_p \lrb{R(1+K \hu_r) - \delta}}{2R + \beta \hN_p(K \hu_r + \pc)}.
+%\end{equation}
+%which exists if
+%
+%
+%
+%%%
+%
+%CHECK NUMERICALLY
+%
+%
+%% OLD STUFF:
+%
+% If every individual in the population carries allele $B$, then if $N_p < 1/\beta$, we can to find the nonzero CP density equilibrium in one of two ways. The first way substitutes $L_{tot} = K \hu_r + \pc \frac{r}{r+R}$ into \eqref{r_hat_nodelay}, and the second way substitutes \eqref{delta_eq} for $L_{tot}$ in \eqref{r_hat_nodelay}. Starting with the first method,
+%
+%As for the second method of solving for the nonzero CP density equiibrium,
+%\begin{equation}
+%\hr = 1 - \beta \hN_p \lrp{ \frac{\delta-R}{r-R}}
+%\end{equation}
+%which can be rearranged into the equation $Q^{(2)}_r(r) = 0$ where
+%\begin{equation}
+%Q^{(2)}_r(r) = r^2 -r(1+R) + R + \beta \hN_p(\delta-R)
+%\end{equation}
+%where the $r^*$ that minimizes $Q^{(2)}_r(r)$ is $r^* = \frac{1+R}{2},$ at which 
+%$$
+%Q^{(2)}_r(r^*) = -\frac{1}{4}(1 - R)^2 + \beta \hN_p(\delta - R),
+%$$ 
+%and thus $Q^{(2)}_r(r)$ has two roots if 
+%$$
+%\hN_p < \frac{(1-R)^2}{4\beta(\delta - R)}.
+%$$
+%which also means that for $\hr>0$ to exist, $\delta > R$. If $\delta < R$, then the forager population can grow infinitely even if the CP is depleted, so it will deplete the CP.
+%
+%
+%
+%The equilibrium population size $\hN_p$ can be found in terms of $\hu_r$ and $\hr$ by substituting \eqref{r_hat_nodelay} into \eqref{W_allB}. Then
+%$$
+%R + L_u(\hu_r, \hr) (1 - \beta N_p L_u(\hu_r,\hr) - R)  - \delta = 0 
+%$$
+%and hence if $L_u(\hu_r,\hr) > 0$
+%\begin{equation}\label{hN_p_solved}
+%\hN_p = \frac{1}{\beta \lrp{L_u(\hu_r,\hr)}^2} \lrb{R - \delta + L_u(\hu_r,\hr) (1 - R) }
+%\end{equation}
+%and if $L_u(\hu_r, \hr) = 0$ the population grows infinitely.
+
+%\red{I just tried simulations in which $R > \delta$ and $R < \delta$. For both, $\delta = 0.2$, $K = 0.3$, $\pc = 0.4$, and initially $u_r = 0$, $u_R = 1$, $x = 0$, $r = 0.8$, $N = 100$, and $\beta = 0.01$. 
+%\begin{enumerate}
+%\item For $R = 0.5$, the population size $N_p$ grew infinitely and $r \to 0$ (didn't do enough rounds to determine if $\hr = 0$.)
+%\item For $R = 0.1$, the system went to the equilibrium $\hw = 1.2 = 1 + \delta$,  $\hu_r = 0.5002$, $\hu_R = 0.4998$,  $\hN_p = 149.5423$, and $\hr = 0.3199$ (rounded to the fourth decimal place). Equations (18) and (20) fit with these results the value of $\hr$ did not match any of the roots of $Q_r^{(1)}(r)$ nor $Q_r^{(2)}(r)$. I'm having trouble figuring out where I made a mistake.
+%\end{enumerate}
+%}
+
+%
+%
+%The equilibrium population size of predators, $\hN_p$, and the equilibrium frequency of predators foraging for the CP, $\hu_r$, are solved by substituting the nonzero value of $\hr$. %, \red{which is the larger root of $Q_r(r)$ in \eqref{Q_r_nodelay}, into Eqs. \eqref{hN_p_solved_nice}and \eqref{freqs_allB}a - b?}.
+%
+%The equilibrium frequency at which predators feed on prey can be found in terms of $\hr$. From \eqref{systal_allB}c,
+%\begin{equation}
+%(1 + \delta) u_r = \frac{(\delta-R)}{\hr-R}(1 + \hr)
+%\end{equation}
+%and from \eqref{systal_allB}c,
+%\begin{equation}
+%(1 + \delta) (1 - u_r) = \frac{(\hr - \delta)}{\hr-R}(1+R)
+%\end{equation}
+%\subsection{Equilibria, time delay}
+%Here, $\hr = 1 - \beta \hu_r \hN$. From \eqref{systal_allB}c-d, at equilibrium
+%\begin{equation}
+%\frac{u_r}{1 - u_r} = \frac{L(u_r,r)(1+r)}{(1 - L(u_r,r))(1+R)}
+%\end{equation}
+%
+%, which can be positive or negative, $Q_r(\alpha-1) = N_p\beta \lrb{ K \alpha u_r + \pc(\alpha - 1)}> 0$ and also $Q_r(\alpha-1) > Q_r(0)$ because $\alpha > 1$. 
+%TO DETERMINE THE NUMBER OF EQUILIBRIA IN_p QR(0) IS POSITIVE, WE NEED TO EXAMINE WHERE THE MINIMUM IS. IF IT'S POSITIVE, NO ROOTS. IF NEGATIVE, TWO ROOTS. MAY WANT TO ALSO LOOK AT THE DERIVATIVE OF Q AT 0 The vertex of $Q_r(r)$ is at
+%$$
+%r^* = \frac{1}{2} \lrb{\alpha - 1 - A - \beta \hat{N_p}(K\hu_r + \pc)} > 0, %should this be - 
+%$$
+%and thus the minimum value of $Q_r(r)$ is
+%\begin{equation}
+%Q(r^*) = - r^*2 + \beta \hN_p K \hu_r - A(\alpha-1). FIX THIS
+%\end{equation}
+%\red{
+%Since $Q(\alpha - 1) > Q(0)$, the vertex $r^* < \alpha - 1$.
+%We have the following conditions which determine how many nonzero prey population size equilibria exist if $\beta > 0$:
+%\begin{enumerate}
+%\item If $Q(r^*) > 0$ then there is no prey population size equilibrium. Note that if $Q(r^*) > 0$ then also $Q(0) > 0$.
+%\item If $Q(r^*) < 0$ and $Q_r(0) > 0$ then there are two equilibrium prey population sizes.
+%\item If $Q(r^*) < 0$ and $Q_r(0) < 0$ then there is one equilibrium prey population size and it is the larger of the two roots of $Q_r(r)$.
+%\end{enumerate}}
+
+
+%
+%\section{Continuous Version
+% A population of predators of density $y(t)$ at time $t$ hunts for two types of prey with respective densities denoted $x_i(t)$ at time $t$ for $i = 1,2$. Only predators who have successfully learned how to find food can reproduce. The two prey types have density-dependent growth due to intra-type competition but do not compete with each other, i.e. there is no inter-type competition. Let $\vec{x}(t) = [x_1,x_2]^T$. The intrinsic rate of growth for prey population $i$ is $R_i$ and the carrying capacity is $K_i$ for $i = 1,2$.
+% 
+% Let $\psi_i(t)$ be the probability at time $t$ that a predator has learned the appropriate behavior to catch prey $i$, defined below in Section \ref{secLearning}. Also write $\vec{\psi} = [\psi_1,\psi_2]^T$. The probability of catching a prey type and the amount of that food type that is available together determine a predator's functional response, or kill rate, $f_i (t)$, which is defined below in Section \ref{funcresponse}. The conversion rate of prey to predator density growth per unit time is $a_i$ for $i = 1,2$ and the death rate of predators is $\delta$. The effect of predation on the prey population per unit time is $\gamma_i$. Thus system dynamics are described by 
+%\begin{subequations}
+%\begin{align}
+%\frac{dy}{dt} =& y \lrp{ a_1  f_1(t)+ a_2 f_2(t)- \delta } \\
+%\frac{dx_i}{dt} =& R_i x_i(t) \lrp{ 1 - \frac{x_i(t) }{K_i} } - \gamma_i y(t) f_i\lrp{\vec{x}(t), \vec{\psi}(t) },
+%\end{align}
+%\end{subequations}
+%as illustrated by the following diagram.
+%\vspace{1cm}
+%
+%\tikzstyle{predators} = [rectangle, draw, fill = blue!20, minimum width =4cm, minimum height = 7 cm, node distance= 10cm, text depth=6cm]
+%\tikzstyle{committed} = [rectangle, draw, fill = green!20, minimum width = 3.5cm, minimum height = 2cm, text width = 3 cm]
+%\tikzstyle{food} = [ellipse, draw, fill = yellow!20,
+%	text width = 4.5em, text centered, node distance= 5cm]
+%\tikzstyle{line} = [draw, very thick, color=black, -{Latex}]
+%\tikzstyle{inhibit} = [draw, very thick, color=black, -{Square}]
+%\begin{tikzpicture}
+%	% Place nodes
+%	\draw (0,0) node[predators] (predators) {All Predators};
+%	\draw(0,1.5) node[committed] (committed_1) {Predators feeding on resource $1$};
+%	\draw(0,-1.5) node[committed] (committed_2) {Predators feeding on resource $2$};
+%	\draw (7,1.5) node [food] (food_1) {N_pood type $1$};
+%	\draw (7,-1.5) node [food] (food_2) {N_pood type $2$};
+%	% Place edGes	
+%	\path [inhibit] (committed_1) -- node {} (food_1);
+%	\path [inhibit] (committed_2) -- node {} (food_2);
+%	\path [line] (committed_1) to [out=170,in=175, looseness = 5]  node{} (predators);
+%	\path [line] (committed_2) to [out=190,,in=185, looseness = 5]  node{} (predators);
+%	% Label edGes
+%	\draw (-3,2.5) node (birth1) {Birth};
+%	\draw (-3,-2.5) node (birth2) {Birth};
+%	\draw (3.5,2) node (pred1) {Predation};
+%	\draw (3.5,-2) node (pred2) {Predation};
+%\end{tikzpicture}
+%%
+%\subsection{N_punctional Response} \label{funcresponse}
+%
+%The simplest version of the functional response is a Type I response where the kill rate is linearly related to the amount of prey available \cite{holling1959some}. A variation of the Type I response which takes into account the effect of learning is 
+%\begin{equation} \label{funcresponse_lin}
+%f_i \lrp{\vec{x}(t), \vec{\psi}(t)}= f_i \lrp{x_i(t), \psi_i(t)} = \psi_i(t) x_i(t).
+%\end{equation}
+%% Check this ^
+%
+%A more realistic but less tractableversion is the Type II response \cite{holling1959some}, which can be adjusted to include the effect of learning using the functional response from \cite{van2001alternative},
+%\begin{equation} \label{funcresponse_ii}
+%f_i\lrp{\vec{x}(t), \vec{\psi}(t)} = \frac{ \psi_i(t)x_i(t) }{ 1 + \sum_{i=1,2} \psi_i(t) T_i x_i(t) },
+%\end{equation}
+%where $T_i$ is the handling time for prey $i$.
+%
+%\subsection{Learning} \label{secLearning}
+%Predators can learn socially with probability $L_s$ or individually with probability $L_I$ where $L_s + L_I = 1$.  Individual learning occurs when a predator adopts an appropriate hunting behavior through directly sampling the environment.  Predators that learn through trial-and-error should become better at catching prey if they encounter them more frequently. Assume the rate at which a predator encounters prey is proportional to the density of the prey population. When predators individually learn to catch prey, the killed prey acts as a reinforcement to the behavior, and thus this behavior can be thought of as a conditioned response. Researchers studying conditioned learning use a learning curve that is the plot of how the performance of a conditioned behavior changes in relation to the number of trials that resulted in reinforcement \cite{gallistel2004learning}. Group learning curves, which average the learning curves over a set of individuals, often are approximated using the Weibull function \cite{gallistel2004learning}. While individuals learning curves often have steps rather than a gradual increase \cite{gallistel2004learning}, we assume a group-learning curve since the predator-prey model involves learning over a population rather than at the individual level. Let $\sigma_i(x_i)$ be the probability of individually learning a successful hunting strategy for prey $i$ as a function of the amount of prey $i$ available, which is a proxy of the number of reinforcements the predator experiences.  Therefore
+% \begin{equation} \label{indlearn}
+% \sigma_i(x_i) = 1 - \exp\lrp{-\lrp{\frac{x_i}{b_i}}^{c_i} },
+% \end{equation}
+%  where $b_i>0$ is the latency of behavioral onset and $c_i>0$ is the abruptness, or steepness, at which the behavioral performance increases \cite{gallistel2004learning}. Since $x_i \geq 0$, $0 \leq \sigma_i(x_i) \leq 1$.  In this case,
+% \begin{equation}
+% \sigma_i'( x_i) = c_i b_i^{-c_i} x^{c_i-1} \exp\lrp{ -(x_i/b_i)^{c_i}}
+% \end{equation}
+% and
+% \begin{equation}
+% \sigma_i''( x_i)  = \sigma_i'(x_i) x_i^{-1} \lrp{ c_i - 1 -c_ib_i^{-c_i} x^{c_i}}.
+% \end{equation}
+%The inflection point is at
+%\begin{align}
+%x_i^* = b_i \lrp{ 1-\frac{ 1}{c_i}}^{1/c_i}
+%\end{align}
+%if $0 < c_i \leq 1$ so that $x_i^* > 0$. Otherwise the learning curve does not have an inflection point and resembles a reverse exponential. Since $x_i \leq K_i$, if we want the learning curve to have an inflection point over the domain $0 \leq x_i \leq K_i$, then $b_i \lrp{ 1-\frac{ 1}{c_i}}^{1/c_i} \leq K_i$. 
+%
+%\begin{figure}[htbp!]
+%\centering
+%\begin{tikzpicture}
+%\begin{axis}[mystyle, xmin=0, ymin=0]
+%	\addplot[domain=0:5, samples=100, color=red]{1-exp(-(x)^2)};
+%	\addplot[domain=0:5, samples=100, color=blue]{1-exp(-(x/3)^2)};
+%	\addplot[domain=0:5, samples=100]{1-exp(-(x)^1)};
+%	%\addplot[domain=0:5, samples=100]{1-exp(-(x/2)^1)};
+%	%\addplot[domain=0:5, samples=100]{1-exp(-(x)^3)};
+%\end{axis}
+%\end{tikzpicture}
+%\caption{Plots of $\sigma_i(x_i)$ as in Eq. \eqref{indlearn} with $b_i = 1, c_i = 2$ (red) $b_i=3,c_i=2$ (blue), and $b_i=1, c_i=1$ (black).}
+%\end{figure}
+%
+%% However, if we assume that individuals at time $t$  know only one out of two behaviors, which would require that $\sigma_1(x_1) + \sigma_2(x_2) \leq 1$, then we can set
+%%  \begin{equation} \label{indlearn2}
+%%  \sigma_i(x_i) =
+%% \begin{cases}
+%% \frac{x_i}{x_1 + x_2} \lrp{ 1 - \exp \lrp{-\lrp{\frac{x_i}{b_i}}^{c_i} }}  & \text{if } x_1 + x_2 > 0 \\
+%% 0 & \text{otherwise}
+%% \end{cases}
+%%  \end{equation}
+%
+%%where the term $\frac{x_i}{x_1 + x_2}$ ensures that $\sigma_1(x_1) + \sigma_2(x_2) \leq 1$ if $x_1 + x_2 > 0$. 
+% 
+%Social learning occurs when a na\"{i}ve predator imitates a more experienced predator hunting prey. Let $\tau$ be the time delay indicating that the demonstrator is from an earlier generation. The structure of the model depends on assumptions about social learning. There are three options
+%
+%\begin{enumerate}
+%% Unbiased social learning
+%
+%\item[SL1:] Assume the probability that a predator using social learning adopts behavior $i$ is
+%\begin{equation}\label{soclearn_unbiased}
+%S\lrp{\psi_i(t-\tau)} = \psi_i(t - \tau).
+%\end{equation}
+%In this case we do not have to assume that a predator only knows how to perform one behavior at a time, so if individual learning is defined in Eq. \eqref{indlearn}, then
+%\begin{equation}
+%\psi_i(t) = L_s \psi_i(t-\tau) + L_I \sigma_i(x_i(t)).
+%\end{equation}
+%If the equilibrium $(\hx_1,\hx_2,\hy)$ exists, (see below for discussion of conditions for existence), then since $L_s = 1 - L_I$, $\hp_i = \sigma_i(\hx_i)$ if $L_I > 0$  and otherwise if $L_I=0,L_s=1$ then $\psi_i(t) = \psi_i^{(0)}$. Therefore if $L_I > 0$ the system dynamics do not depend on the probability that individuals use social learning and is thus not very interesting and contradicts the results of \cite{borofsky2020conformity}.  IT'S REALLY STRANGE I GET THIS RESULT, BUT IN \cite{borofsky2020conformity} \red{THE EQUILIBRIA For K=D=0 AND K>0 D=0 WERE DIN_pN_pERENT. WHY? IS IT BECAUSE IN \cite{borofsky2020conformity} THE RECURSION For $u_i$ HAS A N_pITNESS? SHOULD MY EQUATION For $\psi_i$ HAVE N_pITNESS?}
+%% Biased social learning
+%\item[SL2:] If social learners only imitate predators performing successful hunting strategies then Eqn \eqref{soclearn_unbiased} becomes
+%\begin{equation} \label{soclearn_biased1}
+%S_i \lrp{t} = 
+%\begin{cases}
+%\frac{\psi_i(t-\tau)}{\psi_1(t-\tau) + \psi_2(t-\tau)} & \text{if } \psi_1(t-\tau) + \psi_2(t-\tau) > 0\\
+%0 & \psi_1(t-\tau) + \psi_2(t-\tau) = 0
+%\end{cases}
+%\end{equation}
+%where we must also assume that time $t$ a predator either performs behavior 1 and 2, so $\psi_1 + \psi_2 \leq 1$ and $1 - \psi_1 - \psi_2$ is the probability a forager performs an unsuccessful foraging behavior. Then individual learning is defined by Eq. \eqref{indlearn} scaled by $\frac{x_i}{x_1+x_2}$and
+%\begin{subequations} \label{eqPsi_biased}
+%\begin{align}
+%\psi_i(t) &=L_I  \frac{x_i}{x_1+x_2} \sigma_i(x_i(t)) + L_s S_i(t).
+%\end{align}
+%\end{subequations}
+%If predators only use individual learning, i.e. $L_I = 1$ and $L_s = 0$, then at equilibrium $\hp_i = \frac{\hx_i}{\hx_1 + \hx_2} \sigma_i(\hx_i)$. If predators only use social learning, i.e. $L_s = 1$ and $L_I = 0$, then $(\hp_i,\hp_j) = (0,0)$ or $(p, 1-p)$ for some constant $p$ such that $0 \leq p \leq 1$ and $i,j = 1,2$, $i \neq j$. Otherwise if $L_I,L_s>0$ then we solve the pair of equations obtained by substituting \eqref{soclearn_biased1} into \eqref{eqPsi_biased}. Using the Python package Sympy, I found that the equilibria are $(\hp_1, \hp_2) = (0,0)$ and
+%\begin{equation} \label{socAssumption2}
+% (\hp_1,\hp_2) = \lrp{ \frac{L_I }{\hx_1+\hx_2}+ \frac{L_s }{\hx_1 \sigma_1(\hx_1)+\hx_2 \sigma_2(\hx_2)} }(\hx_1 \sigma_1(\hx_1),\hx_2 \sigma_2(\hx_2)).
+%\end{equation}
+%where the latter equilibrium only exists if $\hx_1 + \hx_2 > 0$ and $\hx_1 \sigma_1(\hx_1) + \hx_2 \sigma_2(\hx_2) > 0$. 
+%
+%
+%If we look at social learning where social learners copy members of the same generation, then we substitute $\tau = 0$ into Eq. \eqref{eqPsi_biased}, i.e. $S_i(t) = \frac{\psi_i(t)}{\psi_1(t) + \psi_2(t)}$. Solving for $\psi_i(t)$ yields
+%\begin{equation} \label{eqPsi_SL2_nodelay}
+%\psi_i = \psi_i(x_1, x_2) = x_i \sigma_i(x_i) \lrp{\frac{L_I}{x_1+x_2} + \frac{L_s}{x_1 \sigma_1(x_1)+x_2 \sigma_2(x_2)}}.
+%\end{equation}
+%The above equation is illustrated in N_pigure \ref{fig:psi_no_delay}. 
+%\begin{figure}[htbp]
+%\begin{center}
+%\includegraphics[width=0.95\textwidth]{psi_no_delay.png}
+%\caption{Graphs of Equation \eqref{eqPsi_SL2_nodelay} for $b_1=b_2=1$, $c_1 = c_2=2$ where $x_1 \in [0.01,1]$. For each graph, the horizontal axis is $x_1$ and the vertical axis is $\psi_1(x_1)$. The value of $x_2$ is held constant for each graph. On the top row, it is constant at $x_2 = 0$ on the left and $x_2 = 0.2$ on the right. On the bottom row, it is held constant at $x_2 = 0.5$ on the left and $x_2 = 0.9$ on the right.  Lines are colored by the $L_I$ value, using the same color to $L_I$ value correspondence for each graph. where the corresponding social learning value is $L_s = 1 - L_I$}.
+%\label{fig:psi_no_delay}
+%\end{center}
+%\end{figure}
+%
+%
+%
+%% N_pILL IN!
+%
+%% SL3: Social learners imitate actions not individuals
+%\item[SL3:] If we want social learners to only learn from successful behavior but also allow $\psi_i \leq 1$ without requiring $\psi_1 + \psi_2 \leq 1$, then we can have social learners imitate successful hunting events rather than individuals, i.e. the probability of socially learning behavior $i$ is proportion to the functional response or kill rate of prey $i$, $f_i(t-\tau)$. Thus
+%%
+%\begin{equation} \label{soclearnactions}
+%S_i(t) = W_i f_i(t-\tau)
+%\end{equation}
+%%
+%where $W_i$ ensures that $S_i(t) \leq 1$. For example, $W_i$ can be the inverse of the maximum or upper bound of the functional response as $x_i$ becomes large, depending on how $f_i(t)$ is defined (see Section \ref{funcresponse}). If the functional response is linear as in Eq. \eqref{funcresponse_lin}, then we can set $W_i = \frac{1}{K_i}$ since $X_i \leq K_i$ and $\psi_i \leq 1$.  Individual learning can be defined as in \eqref{indlearn} and 
+%\begin{equation}
+%\psi_i(t) = L_I \sigma_i(x_i) + L_s W_i \psi_i(t-\tau)x_i
+%\end{equation}
+%so
+%\begin{equation}
+%\hp_i = \frac{L_I \sigma_i(\hx_i)}{1-L_s W_i \hx_{i}}.
+%\end{equation}
+%
+%N_purthermore, if $\tau = 0$ then 
+%\begin{equation}
+%\psi_i = \frac{L_i \sigma(x_i)}{1-L_s W_i x_i}.
+%\end{equation}
+%
+%
+% If the functional response is Type II as in Eq. \eqref{funcresponse_ii}, then we can set $W_i = T_i$, but since $x_i(t)$ is a density we may get away with having $W_i = 1$. Now the equilibrium value $\hp_i$ might not be possible to find because Python timed out when I tried to find the solution.
+% 
+% Note that it may make more mechanistic sense to define social learning as
+%\begin{equation}
+%S_i(t) = \frac{ f_i(t-\tau)}{f_1(t-\tau) + f_2(t-\tau)}
+%\end{equation}
+%but Eq \eqref{soclearnactions} is easier to analyze. 
+%\end{enumerate}
+%
+%
+%
+%\subsection{Simplifying assumptions}
+%Assume that all dynamics are equivalent for both prey populations, i.e. $R_1 = R_2 = R$, $K_1 = K_2 = K$, $T_1 = T_2 = T$, $a_1 = a_2 = a$, $\gamma_1 = \gamma_2$, $b_1 = b_2 = b$, and $c_1 = c_2 = c$.
+%%Assume that the parameters for the intrinsic growth rate and carrying capacity of each prey species is the same, so $R_1 = R_2 = R$ and $K_1 = K_2 = K$, N_purther assume, that catching prey from either species requires the same handling time, i.e. $T_1 = T_2 = T$, conversion to predator biomass, i.e. $a_1 = a_2 = a$, and that the independent learning curves are the same, i.e. $b_1 = b_2 = b$ and $c_1 = c_2 = c$. 
+%Then for some positive real number $x$, let $\sigma(x)  = \sigma_1(x)= \sigma_2(x)$. Also let $S(t) = S_1(t) = S_2(t)$.
+%
+%
+%If we use a linear functional response, i.e. $f_i(t) = \psi_i(t) x_i(t)$, then we can use dimensional analysis to reparameterize the system. Let $X_i = x_i/K$ and let $Y = Ry/(aK)$. Let $\eta = aK$. Then
+%
+%\begin{subequations}
+%\begin{align}
+%\frac{aK}{R} \frac{dY}{dt}&= \frac{aK}{R} y \lrp{aK\psi_1(t) X_1 + aK \psi_2(t) X_2(t) - \delta} \\
+%K \frac{dX_i}{dt} &= RKX_i (1 - X_i ) - \gamma \psi_i \frac{aK}{R} KX_i Y_i
+%\end{align}
+%\end{subequations}
+%
+%which simplifies to 
+%\begin{subequations}\label{sys_lin_newparams}
+%\begin{align}
+%\dv{Y}{t} &= Y(\eta \psi_1 X_1+ \eta \psi_2 X_2- \delta )\\
+%\dv{X_i}{t} &= RX_i(1 - X_i) - A  \psi_i X_i Y.
+%\end{align}
+%\end{subequations}
+%where $A = \frac{\gamma \eta}{R}$. 
+%\subsubsection{SL2}
+%For assumption SL2,
+%\begin{equation}
+%\psi_i(t) = L_I \frac{X_i}{X_1+X_2}\sigma(KX_i) + L_s \frac{\psi_i(t-\tau)}{\psi_1(t-\tau) + \psi_2(t-\tau)}
+%\end{equation}
+%where the equation for $\sigma(KX_i)$ is the same as $\sigma(x_i)$ but with $b$ replaced by $B = K/b$, i.e. 
+%\begin{equation}
+%\sigma(KX_i) = 1 - \exp\lrp{ \lrp{-BX_i}^c }.
+%\end{equation}
+%Let $\ts_i = \ts(X_i) = \sigma(KX_i)$. When $\tau = 0$ and $L_I > 0$
+%\begin{equation} \label{sl2_no_delay}
+%\psi_i(t) = X_i \ts_i \lrp{\frac{L_I}{X_1+X_2} + \frac{L_s}{X_1 \ts_1 + X_2 \ts_2}}.
+%\end{equation}
+%If $\tau=L_I = 0, L_s = 1$, we have no way to solve for $\psi_i(t)$. 
+%
+%The partial derivatives of $\psi_i(t)$ from \eqref{sl2_no_delay} with respect to $X_i$ and $X_j$ are
+%\begin{multline}
+%\pdv{\psi_i}{X_i} = \dv{\ts_i}{X_i} \lrp{  \frac{-L_s X_i^2 \ts_i}{(X_1 \ts_1 + X_2 \ts_2)^2} + \psi_i/\ts_i }  \\- X_i \ts_i \lrp{ \frac{L_I}{(X_1 + X_2)^2 }+ \frac{L_s \ts_i}{(X_1 \ts_1 + X_2 \ts_2)^2}} + \psi_i/X_i
+%\end{multline}
+%
+%and
+%\begin{multline}
+%\pdv{\psi_i}{X_j}  =  -\dv{\ts_j}{X_j} \frac{L_s X_1 X_2 \ts_i}{(X_1 \ts_1 + X_2 \ts_2)^2}  - X_i \ts_i \lrp{ \frac{L_I}{(X_1 + X_2)^2} + \frac{L_s \ts_j}{(X_1 \ts_1 + X_2 \ts_2)^2} }
+%\end{multline}
+%for $i \neq j$, where $\dv{\ts_i}{X_i} = cB^c X_i^{c-1} \exp\lrp{ -(BX_i)^c}$.
+%
+%\subsubsection{SL3}
+%For assumption SL3, 
+%\begin{equation}
+%\psi_i(t) = L_I \ts(X_i) + L_s S_i(t)
+%\end{equation}
+%where
+%\begin{equation}
+%S_i(t) = \tilde{W} \psi_i(t - \tau) X_i(t - \tau)
+%\end{equation}
+%for $\tilde{W} = KW$. When $\tau = 0$, 
+%\begin{equation}
+%\psi_i(t) = \frac{L_I \ts(X_i)}{1-L_s \tW X_i}.
+%\end{equation}
+%The partial derivatives with respect to $X_i$ and $X_j$ are
+%\begin{equation}
+%\pdv{\psi_i}{X_i} = \dv{\ts}{X_i} \frac{L_I}{1-L_s \tW X_i} + \frac{L_s L_I \tW \ts_i}{(1-L_s \tW X_i)^2}
+%\end{equation}
+%and
+%\begin{equation}
+%\pdv{\psi_i}{X_j} = 0.
+%\end{equation}
+%%%%%%%		Analysis		%%%%%%%%
+%
+%\section{Analysis with no time delay}
+%For the subsequent work, assume the functional response is linear as in Eq. \eqref{funcresponse_lin}, i.e. $f_i(t) = \psi_i(t) x_i(t)$ and the predator-prey system is \eqref{sys_lin_newparams}. 
+%\subsection{Equilibria and Linear Stability Analysis}
+%
+%Let $N_p(Y,X_1,X_2) = \frac{dY}{dt}$ and $G_i(Y,X_1,X_2)= \frac{dX_i}{dt}$. The Jacobian is
+%\begin{equation} \label{jac}
+%J (\hY,\hX_1,\hX_2) = 
+%\begin{pmatrix}
+%\pdv{N_p}{Y} && \frac{\partial N_p}{\partial X_1} && \frac{\partial N_p}{\partial X_2}\\ \\
+%\pdv{G_1}{Y} && \frac{\partial G_1}{\partial X_1} && \frac{\partial G_1}{\partial X_2} \\ \\
+%\frac{\partial G_2}{\partial Y} && \frac{\partial G_2}{\partial X_1} && \frac{\partial G_2}{\partial X_2}
+%\end{pmatrix}
+%\end{equation}
+%where at the equilibrium,
+%
+%\begin{subequations}
+%\begin{align}
+%\pdv{N_p}{Y} &=\eta \hp_1 \hX_1+ \eta \hp_2 \hX_2- \delta \\
+%\pdv{N_p}{X_i} &= \hY \eta \lrp{ \hp_i + \hX_i \pdv{\psi_i}{\hX_i} + X_j \pdv{\psi_j}{\hX_i}} \\
+%\pdv{G_i}{Y} &= - A \hp_i\hX_i \\
+%\pdv{G_i}{X_i} &= R(1 - 2 \hX_i) - A \hY \lrp{ \hp_i + \hX_i \pdv{\psi_i}{X_i}} \\
+%\pdv{G_i}{X_j} &= -A \hX_i \hY \pdv{\psi_i}{X_j},
+%\end{align}
+%\end{subequations}
+%where the values of the partial derivatives $\pdv{\psi_i}{X_i}$, $\pdv{\psi_i}{X_j}$, and $\pdv{\psi_j}{X_i}$ are evaluated at the equilibrium $(\hY, \hX_1, \hX_2)$ and depend on the social learning assumption.
+%\subsubsection{Trivial Equilibria}
+%Without predation, each prey population grows to its carrying capacity, i.e. $\hX_i = 1$. Without prey, predators cannot survive, i.e. $\hY = 0$. Thus the trivial equilibria are $(\hY,\hX_1,\hX_2) = (0,0,0), (0,1,0),(0,0,1),$ and $(0,1,1)$
+%
+%N_pirst consider the equilibrium $(\hY, \hX_1, \hX_2) = (0,0,0)$. This equilibrium is unstable to the addition of prey individuals but stable to the addition of predator individiuals. As a formal proof of this statement, the Jacobian is
+%\begin{equation}
+%J(0,0,0) = \begin{pmatrix}
+%-\delta & 0 & 0 \\
+%0 & R & 0 \\
+%0 & 0 & R
+%\end{pmatrix}
+%\end{equation}
+%with eigenvalues $\lambda_1 = -\delta, \lambda_2 = R,$ and $\lambda_3 = R$. The eigenvector for $\lambda_1 = -\delta$ is $(1,0,0)$. The eigenvector for $\lambda_2, \lambda_3 = R$ is $(0, \delta_{x_1}, \delta_{x_2})$ where $ \delta_{x_1}, \delta_{x_2}$ are real numbers.
+%
+%Next consider the equilibrium $(\hY, \hX_i, \hX_j) = (0,1,0)$. The Jacobian is
+%\begin{equation}
+%J(0,1,0) = \begin{pmatrix}
+%\eta \hp_i  & 0 & 0 \\
+%-A \hp_i & -R & 0 \\
+%0 & 0 & R
+%\end{pmatrix}
+%\end{equation}
+%and the eigenvalues are the diagonal entries of the Jacobian, $\lambda_1 = \eta \hp_i, \lambda_2=-R, \lambda_3= R$,
+%with respective eigenvectors $v_1 = (R + \eta \hp_1, -A \hp_1,0)$, $v_2 = (0,1,0)$, and $(0,0,1)$. Thus a second prey species can enter the system and reach its carrying capacity in the absence of predators, and if we add predators then the density of prey will be reduced.
+%
+%If $(\hY,\hX_1,\hX_2) = (0,1,1)$, 
+%\begin{equation}
+%J(0,1,1) = 
+%\begin{pmatrix}
+%2\eta \hp  - \delta & 0 & 0 \\
+%-A \hp & -R & 0 \\
+%-A \hp& 0 & -R \\
+%\end{pmatrix}
+%\end{equation}
+%where $\hp_1 = \hp_2 = \hp$. Under SL2, $\hp = \frac{1}{2}L_I\lrp{1-\exp(-B^c)} + \frac{1}{2}L_s$, and under SL3, $\hp = \frac{L_I (1 - \exp(-B^C))}{1-L_s \tW}$  The eigenvalues are the diagonal entries
+%\begin{equation}
+%\lambda_1 = 2 \eta \hp - \delta, \lambda_2= -R, \lambda_3= -R
+%\end{equation}
+%with respective eigenvectors
+%\begin{equation}
+%v_1 = \lrp{\frac{R-\delta + 2 \hp \eta}{A \hp},-1,-1}^\top, v_2 = (0,1,0)^\top, v_3 = (0,0,1)^\top
+%\end{equation}
+%Therefore the equilibrium $(0,1,1)$ is stable if $ \delta > 2 \eta \hp$. We expect the introduction of predators to reduce the prey populations, so we should have $2 \eta \hp \geq \delta$.\
+%
+%
+%\subsection{One Predator, One Prey Extant}
+%If $Y>0$ and $X_i >0$ but $X_j = 0$, then  $(\hY, \hX_i, \hX_j) = \lrp{\frac{R(1-\hX_i)}{A \hp_i}, \hX_i,0}$ where
+%\begin{equation}
+% \hp_i \hX_i = \delta/\eta.
+%\end{equation}
+%Under assumption [SL2], i.e. $\hp_i$ is defined as in \eqref{socAssumption2}, we cannot analytically solve for $\hX_i$. %Luckily, we can solve for $\hy$ by setting \eqref{sys_lin_newparams}b to zero and substituting $\hX_j = 0$. Then
+%%\begin{align}
+%%R(1-X_i) - A\psi_i X_i Y &= 0 \notag\\
+%%Y &= \frac{R(1-X_i)}{A \psi_i X_i}
+%%\end{align}
+%Under assumption [SL3], i.e. $S_i(t) =  \tW X_i \psi_i(t - \tau)$, we still cannot find $\hX_i$ analytically because $\hp_i = \frac{L_I \ts(\hX_i)}{1-L_s \tW \hX_{i}}$ and $\ts(\hX_i)$ is a Weibull N_punction.
+%
+% The Jacobian is
+%
+%\begin{equation}
+%J=
+%\eval{
+%\begin{pmatrix}
+%0 & \pdv{N_p}{X_1} & 0 \\ \\
+%\pdv{G_1}{Y} & \pdv{G_1}{X_1} & \pdv{G_1}{X_2} \\ \\
+%0 & 0 & R  \\
+%\end{pmatrix}}_{\lrp{\frac{R(1-\hX_1)}{A\hp_1},\hX_1,0}},
+%\end{equation}
+%the characteristic equation is
+%\begin{equation}
+%0 = (R-\lambda)\lrb{- \lambda \lrp{\eval{\pdv{G_1}{X_1}}_{(\hY,\hX_1,0)} - \lambda} - \eval{\pdv{N_p}{X_1} \pdv{G_1}{Y}}_{(\hY,\hX_1,0)} }
+%\end{equation}
+%and thus
+%\begin{equation}
+%\lambda = R, \frac{1}{2} \lrp{ \pdv{G_1}{X_1} \pm \sqrt{ \lrp{ \pdv{G_1}{X_1} }^2 + 4 \pdv{N_p}{X_1}\pdv{G_1}{Y}  }}
+%\end{equation}
+%where  $\pdv{G_1}{Y} = -A\hp_1\hX_1$, $\pdv{N_p}{X_1} = \eta \hY\lrp{ \hp_1 + \hX_1 \dv{\psi_1}{X_1}}$, and $\pdv{G_1}{X_1} = R(1-2\hX_1)-A\hY\lrp{ \dv{\psi_1}{X_1} X_1 + \hp_1} = -R\hX_1 -A \hY \hX_1 \pdv{\psi_1}{X_1}$. The first eigenvalue, $\lambda = R$ tells us that the equilibrium is unstable when individuals of prey type 2 are introduced into the system. The full stability of the equilibrium depends on the sign of the real parts of the second and third eigenvalues. If not real, because $\pdv{G_1}{X_1} < 0$, the equilibrium is a saddle point. If real, the signs of the second and third eigenvalues need to be determined numerically.
+%%TO-DO: CHeck with mathematica or wolfram alpha
+%
+%Therefore
+%\begin{equation}
+%\lambda = R, \frac{-R \hX_1-A \hY \hX_1 \pdv{\psi_1}{X_1} \pm \sqrt{\lrp{R\hX_1-A \hY \hX_1 \pdv{\psi_1}{X_1}}^2- 4\eta R \hX_1 (1-\hX_1) \lrp{ \hp_1 + \hX_1 \frac{d\psi_1}{dX_1}}}}{2}.
+%\end{equation}
+%so the equilibrium $\lrp{\frac{R(1-\hX_1)}{A\hp_1},\hX_1,0}$ is unstable because at least one eigenvalue is positive.
+%
+%The eigenvector for $\lambda = R$ is
+%
+%\subsubsection{Predators and Both Prey Types Extant}
+%For the three dimensional equilibrium, we are equally unable to analytically solve for $\hX_1$ and $\hX_2$. We do know that
+%\begin{equation}
+%\hY = \frac{R(1-\hX_1)}{A \hp_1}
+%\end{equation}
+%and
+%\begin{equation}
+%\hY = \frac{R(1-\hX_2)}{A \hp_2}
+%\end{equation}
+%so
+%\begin{equation} \label{eq_solvex1}
+%\hp_1(1 - \hX_2) = \hp_2 (1 - \hX_1).
+%\end{equation}
+%Equations \eqref{eq_solvex1} and 
+%\begin{equation} \label{eq_solvex2}
+%\hp_1 \hX_1 + \hp_2 \hX_2 = \delta/\eta
+%\end{equation}
+% can be used to solve for $\hX_1, \hX_2$ numerically. 
+%
+%
+%Consider the three dimensional equilibrium $\hX_1 = \hX_2 = \hX$ and $\hY = \frac{R(1-\hX)}{A\hp}$ where $\hp_1 = \hp_2 = \hp$ and $2 \eta \hp \hX = \delta$. Note that $\pdv{N_p}{Y}=0$, $\pdv{N_p}{X_1} = \pdv{N_p}{X_2}$, $\pdv{G_1}{X_1} = \pdv{G_2}{X_2}$, and $\pdv{G_1}{X_2} = \pdv{G_2}{X_1}$. Referring to the Jacobian in \eqref{jac}, the eigenvalues are 
+%\begin{align}
+%\lambda_1 &= \pdv{G_1}{X_1} - \pdv{G_1}{X_2},\\
+% \lambda_2 &= \frac{1}{2} \lrp{ \pdv{G_1}{X_1} + \pdv{G_1}{X_2} + \sqrt{\lrp{ \pdv{G_1}{X_1} + \pdv{G_1}{X_2}}^2 + 8 \pdv{N_p}{X_1} \pdv{G_1}{Y}}} \\
+% \lambda_3 &= \frac{1}{2} \lrp{ \pdv{G_1}{X_1} + \pdv{G_1}{X_2} - \sqrt{\lrp{ \pdv{G_1}{X_1} + \pdv{G_1}{X_2}}^2 + 8 \pdv{N_p}{X_1} \pdv{G_1}{Y}}},
+%\end{align}
+% with eigenvectors 
+% \begin{align}
+% \vec{v_1} &= (0,-1,1)^\top \\
+% \vec{v_2} &= \lrp{ \frac{-\lambda_3}{\pdv{G_1}{Y}},1,1 }^\top \\
+% \vec{v_3} &= \lrp{ \frac{-\lambda_2}{\pdv{G_1}{Y}},1,1 }^\top,
+% \end{align}
+%where $\pdv{N_p}{X_1} = Y \eta \lrp{ \hp + \hX \pdv{\psi_1}{X_1} + \hX \pdv{\psi_2}{X_1} }$, $\pdv{G_1}{Y} = -A\frac{\delta}{2\eta}$, $\pdv{G_1}{X_1} = R(1-2\hX) - A \hY \lrp{ \hp + \hX \pdv{\psi_1}{X_1}}$, and $\pdv{G_1}{X_2} = -A\hX \pdv{\psi_1}{X_2}$. Next we analyze the signs of the eigenvalues:
+%\begin{align}
+%\lambda_1 &= \pdv{G_1}{X_1} - \pdv{G_1}{X_2} = R(1-2\hX) -A \hY(\hp + \hX \pdv{\psi_1}{X_1}) - A \hX \pdv{\psi_1}{X_2} \\
+%&= -R \hX - A\hX \lrp{ \hY \pdv{\psi_1}{X_1} + \pdv{\psi_1}{X_2}}
+%\end{align}
+%Under SL2, when $\hX_1 = \hX_2 = \hX$,
+%\begin{equation}
+%\eval{\pdv{\psi_1}{X_1}}_{\hX_1=\hX_2=\hX} = \frac{\dv{\ts(\hX)}{X} }{2 \ts(\hX)} \lrp{\frac{1}{2} L_s + L_I \ts(\hX) }  - \frac{1}{4\hX} \lrp{L_I \ts(\hX) + L_s}
+%\end{equation}
+%and
+%\begin{equation}
+%\eval{\pdv{\psi_1}{X_2}}_{\hX_1=\hX_2=\hX} = -\frac{\dv{\ts(\hX)}{X} L_s}{4 \ts(\hX)} - \frac{1}{4\hX} \lrp{ L_I \ts(\hX) + L_s}.
+%\end{equation}
+%And thus the expressions are too complicated to determine the sign of $\lambda_1, \lambda_2,$ or $\lambda_3$ analytically. 
+%
+%Under assumption SL3 with a linear functional response, $\pdv{\psi_1}{X_2} = 0$ and
+%\begin{equation}
+%\eval{\pdv{\psi_1}{X_1}}_{\hX_1=\hX_2=\hX} = \frac{L_I}{1-L_s \tW \hX} \lrp{ \dv{\ts(\hX)}{X} + \frac{L_s \tW \ts(\hX)}{1 - L_s \tW \hX}} >0
+%\end{equation}
+%Then $\lambda_1 = -R\hX - A \hX \hY \pdv{\psi_1}{X_1} \leq -R\hX < 0$. Thus the equilibrium is stable in the direction of $\vec{v_1} = (0,-1,1)^\top$. However, we cannot analyticallydetermine the sign of the discriminants of $\lambda_2$ and $\lambda_3$ because it is
+%\begin{equation}
+%discriminant = \hX^2\lrp{ R + A \hY \pdv{\psi_1}{X_1}}^2 - 8 \delta \lrp{R(1-\hX) + A\hX \hY \pdv{\psi_1}{X_1} }
+%\end{equation}
+%Maybe it will help to remember $A = \frac{\gamma \eta}{R}$, $\eta = aK$, $X_i = x_i/K$, and $Y = Ry/(aK)$?
+%\subsection{Linear Stability Analysis with Social Learning}
+%Let's start with social learning assumption [SL2].
+%This part is really confusing. I think I have to think of the system as having 5 equations, except three of those equations are differential equations, and two of those equations are essentially difference equations, i.e. the system is
+%\begin{subequations}
+%\begin{align}
+%\dv{Y}{t} &= Y(\eta \psi_1 X_1+ \eta \psi_2 X_2- \delta )\\
+%\dv{X_i}{t} &= RX_i(1 - X_i) - A  \psi_i X_i Y \\
+%\psi_i &= L_I \sigma(KX_i) + L_s S(\psi_{i,\tau})
+%\end{align}
+%\end{subequations}
+%where $\psi_{i,\tau} = \psi_i(t-\tau)$.
+%
+%I'm writing out my thoughts. Perhaps I could use the method of linear stability analysis for difference equations, i.e. near equilibrium
+%\begin{subequations}
+%\begin{align}
+%\dY' &= (\hY+\dY)\lrp{\eta \sum_i \lrc{(\hp_1 + \delp{i} ) (\hX_i + \dX{i})}- \delta }\\
+%\dX{i}' &= (\hX_i + \dX{i}) \lrp{ R(1 - \hX_i-\dX{i}) - A  (\hp_i + \delp{i}) (X_i + \dX{i}) (\hY + \dY) } \\
+%\delp{i}' &= L_I \lrp{K\dv{\sigma}{X_i}\dX{i}}+ L_s \lrp{\dv{S}{\psi_i}\delp{i}}
+%\end{align}
+%\end{subequations}
+%where the derivatives are evaluated at the equilibrium point. Is this right?
+  %Assume that when prey $i$ is at its carrying capacity, i.e. $x_i = K$, then the probability an individual learner discovers how to catch prey $i$ is $\sigma(K) = 1 - \epsilon_c$ for $0 < \epsilon_c < 1$ the minimum difficulty of learning to catch prey. Substituting $x_i = K$ into \eqref{weibullLC},
+%\begin{align}
+%1 - \exp \lrp{ -\lrp{K/b}^{c} } &= 1 - \epsilon_c, \notag \\
+%\lrp{K/b}^c &= - \log \epsilon_c, \notag \\
+%\frac{K}{\lrp{- \log \epsilon_c}^{1/c}} & = b \label{sigmaepsilon}.
+%\end{align}
+%The above equation allows us to choose $b$ based on how easy it is for predators to learn independently how to find prey $i$ when it is at its maximum availability.
+%For example, if $K=c=2$ and $\epsilon_c = 0.001$, then $b = 0.761$, rounded to the third decimal place.
+%\section{Issue with this model}
+%
+%
+%\subsection{Issue 1}
+%
+%If $S_i(\psi_i(t - \tau)) = \psi_i(t-\tau)$ and a fixed point $(\hat{x_1}, \hat{x_2}, \hat{y})$ exists, then $L_s$ does not affect the value of the fixed point.
+%
+%\begin{proof}
+%As $t$ goes to infinity, given there is a fixed point then $\psi_i(t- \tau) = \psi_i(t)$. Then at the fixed point
+%\begin{align}
+%\psi_i(t) &= L_I \sigma_i(x_i(t)) + L_s \psi_i(t), \\
+%\psi_i(t) &= \frac{1}{1 - L_s} L_I \sigma_i(x_i(t)), \\
+%\intertext{but $L_I = 1 - L_s$ so at the fixed point $\hat{\psi_i}$,}
+%\hat{\psi_i} &= \sigma_i(x_i(t)).
+%\end{align}
+%
+%\end{proof}
+%\subsubsection{ N_pix \# 1}
+%Our first possible fix is to have social learning be defined as in \eqref{eqsoclearn2}, i.e.
+%$$
+%S(\psi_i(t-\tau)) = \frac{\psi_i (t - \tau)}{\psi_1(t-\tau) + \psi_2(t - \tau)}.
+%$$
+\bibliographystyle{unsrt}
+\bibliography{sources-model-ideas}
+\end{document}  

@@ -1,0 +1,122 @@
+\usepackage[margin = 1in]{geometry}        % See geometry.pdf to learn the layout options. There are lots.
+
+%%% settings for American Naturalist:
+\usepackage[sc]{mathpazo} %Like Palatino with extensive math support
+\usepackage{fullpage}
+\usepackage[authoryear,sectionbib,sort]{natbib}
+\linespread{1.7}
+\usepackage[utf8]{inputenc}
+\usepackage{lineno} 
+\usepackage{titlesec}
+\titleformat{\section}[block]{\Large\bfseries\filcenter}{\thesection}{1em}{}
+\titleformat{\subsection}[block]{\Large\itshape\filcenter}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}[block]{\large\itshape}{\thesubsubsection}{1em}{}
+\titleformat{\paragraph}[runin]{\itshape}{\theparagraph}{1em}{}[. ]\renewcommand{\refname}{Literature Cited}
+%\usepackage{lineno}
+
+%%%%%%%%%
+
+
+\usepackage{xcolor}					% for doing text colors
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex
+\usepackage{physics}
+
+\usepackage{setspace}				% for doublespacing
+\usepackage{booktabs}				% so i can use tables printed  in python with pandas.DataFrame.to_latex()
+\usepackage{amssymb, amsmath}		% Writing derivatives easier, can do the eval line
+
+\usepackage{tikz, pgfplots} 					% For diagrams
+\usetikzlibrary{shapes, arrows.meta, % arrows.meta lets me do other arrow head types like square, 			
+			quotes, trees,		%see https://gist.github.com/AndiH/f99d9b0cbd3519c27af5b96cfbeff97c
+			calc} 	
+	
+% \pgfplotsset{mystyle/.append style={axis x line = bottom, axis y line = left, xlabel = {$x_i$}, ylabel = {$\sigma_i(x_i)$}}}
+
+\usepackage{caption, subcaption} % for captions and subcaptions in subfigures	
+\usepackage{ragged2e} 				% used to have unjustified text, as required by ESA journals
+\setlength{\RaggedRightParindent}{\parindent} % because I like indents
+% \usepackage{natbib}					% I think this is necessary for ESA bibliography format
+\usepackage[shortlabels]{enumitem} % so I can have an enumerated list going H1, H2, ...
+\usepackage{xr} % for referencing between documents
+% line numbers
+
+\usepackage{breqn} %for dmath
+\usepackage{longtable} % for tables that take multiple pages
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\loadeq}[1]{%
+    \ExecuteMetaData[equations.tex]{#1}%
+}
+
+%SetFonts
+
+%SetFonts
+
+% Commands:
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\green}[1]{\textcolor{green}{#1}}
+\newcommand{\D}{\Delta}
+\newcommand{\pc}{\pi_C}
+\newcommand{\pw}{\pi_W}
+\newcommand{\bigo}{\mathcal{O}}
+\newcommand{\lrp}[1]{\left( #1 \right)}
+\newcommand{\lrb}[1]{\left[ #1 \right]}
+\newcommand{\lrc}[1]{\left\{ #1 \right\}}
+
+
+%\newcommand{\h}[1]{\hat{#1}}
+\newcommand{\hb}[1]{\hat{\bar{#1}}}
+%\newcommand{\hu}[1]{\hat{u_{#1}}}
+%\newcommand{\hx}[1]{\hat{x_{#1}}}
+%\newcommand{\hy}[1]{\hat{y_{#1}}}
+%\newcommand{\hr}[1]{\hat{r_{#1}}}
+%\newcommand{\hp}[1]{\hat{p_{#1}}}
+
+
+\newcommand{\dk}{\delta_K}
+\newcommand{\dpc}{\delta_{\pi_C}}
+\newcommand{\dpw}{\delta_{\pi_W}}
+\newcommand{\dD}{\delta_{D}}
+\newcommand{\ds}{\delta_{s}}
+\newcommand{\hw}{\hat{W}}
+\newcommand{\dps}[1]{\Delta_{\psi_{#1}}}
+\newcommand{\dR}[1]{\Delta_{R_{#1}}}
+\newcommand{\Dp}[1]{\Delta_{p_{#1}}}
+\newcommand{\du}[1]{\Delta_{u_{#1}}}
+\newcommand{\dx}[1]{\Delta_{x_{#1}}}
+\newcommand{\dy}[1]{\Delta_{y_{#1}}}
+\newcommand{\dr}[1]{\Delta_{r_{#1}}}
+\newcommand{\dw}{\Delta_W}
+\newcommand{\bU}{\bar{U}}
+\newcommand{\bX}{\bar{X}}
+\newcommand{\bY}{\bar{Y}}
+\newcommand{\Lbu}{L_{\bar{u}}}
+\newcommand{\Lbx}{L_{\bar{x}}}
+\newcommand{\Lby}{L_{\bar{y}}}
+
+\newcommand{\cd}{\cdot}
+\newcommand{\rcd}{\tikz\draw[red,fill=red] (0,0) circle (.5ex);}
+\newcommand{\bcd}{\tikz\draw[blue,fill=blue] (0,0) circle (.5ex);}
+\newcommand{\grcd}{\tikz\draw[green,fill=green] (0,0) circle (.5ex);}
+
+% equilibria
+\newcommand{\hps}{\hat{\psi}}
+\newcommand{\hR}{\hat{R}}
+\newcommand{\hu}{\hat{u}}
+\newcommand{\hx}{\hat{x}}
+\newcommand{\hy}{\hat{y}}
+\newcommand{\hr}{\hat{r}}
+\newcommand{\hp}{\hat{p}}
+\newcommand{\hf}{\hat{F}}
+\newcommand{\sh}[1]{\sigma(\hat{r_{#1}})}
+
+% learning eqns
+\newcommand{\lbu}{L_{\bar{u}}}
+\newcommand{\lbx}{L_{\bar{x}}}
+\newcommand{\lby}{L_{\bar{y}}}
