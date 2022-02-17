@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2019)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: PopDynSocialLearning.aux
+The style file: unsrt.bst
+Database file #1: sources-model-ideas.bib
+Warning--empty publisher in roughgarden1979theory
+You've used 17 entries,
+            1791 wiz_defined-function locations,
+            562 strings with 6673 characters,
+and the built_in function-call counts, 3689 in all, are:
+= -- 339
+> -- 144
+< -- 1
++ -- 55
+- -- 38
+* -- 279
+:= -- 599
+add.period$ -- 51
+call.type$ -- 17
+change.case$ -- 15
+chr.to.int$ -- 0
+cite$ -- 18
+duplicate$ -- 149
+empty$ -- 367
+format.name$ -- 38
+if$ -- 794
+int.to.chr$ -- 0
+int.to.str$ -- 17
+missing$ -- 18
+newline$ -- 88
+num.names$ -- 17
+pop$ -- 30
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 56
+stack$ -- 0
+substring$ -- 295
+swap$ -- 17
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 1
+while$ -- 40
+width$ -- 19
+write$ -- 185
+(There was 1 warning)
