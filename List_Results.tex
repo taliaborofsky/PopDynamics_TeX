@@ -1,0 +1,78 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{PopDyn}
+\externaldocument{PopDynSocialLearning.tex}
+\setcounter{section}{3}
+\begin{document}
+
+Page of results
+\begin{lemma} \label{Result_L_delta}
+If $\hN_p > 0$ at equilibrium and $R \neq \hr$, then
+\begin{equation} \label{delta_eq}
+L_u(\hu_r,\hr) = \frac{\delta-R}{\hr-R}.
+\end{equation}
+\end{lemma}
+
+
+\begin{lemma}
+If $R < \delta$, then there is one nonzero $\hu_r, \hr, \hN_p$ equilibrium if $\beta > 0$ and
+\begin{equation} \label{exists_eq_Rlessthan}
+\pc(1-R) + (\delta-R)(1+R) \lrp{ \frac{2K}{1+\delta} -1 } >0.
+\end{equation}
+\end{lemma}
+
+\begin{lemma}
+If $R > \delta$, then there exist two equilibria with $\hr > 0$ provided $Q_r''(r) > 0$, $-\delta Q_r''(r) < Q_r'(0)< 0$, and
+\begin{equation}
+(Q_r'(0))^2 - 2 Q_r''(r) Q_r(0) > 0.
+\end{equation}
+ Otherwise, no $\hr >0$ equilibria exist. 
+\end{lemma}
+
+
+\begin{lemma}
+If $\hr = 0$ then $\hu_r = 0$, assuming $\pc > 0$, and if $R < \delta$, then $\hN_p = 0$.
+\end{lemma}
+
+\begin{lemma}
+If $\hN_p= 0$ and $\hr = 1$, then there is one possible equilibrium frequency $\hu_r>0$ of predators hunting the CP.
+\end{lemma}
+
+%% E0, no delay
+\begin{lemma} \label{result_E0_nodelay}
+E0 is only stable along the nullcline $r = 0$ if $R < \delta$. Any point near the nullcline $r = 0$ will go to the nullcline if $R < \delta$, $R > - \frac{1-K}{1-2K u_r}$, and $1 - \beta N_p K u_r < 0$.
+\end{lemma}
+
+%%% E1, no delay
+\begin{lemma} \label{E1_nodelay}
+Without a time delay, E1 is stable if 
+\begin{equation}
+R-\delta + (1-R) L(\hu_r,1) < 0
+\end{equation}
+ and 
+\begin{equation}
+2K(1 - \hu_r(1-R)) < 1 + R + (1-R)\frac{\pc}{1+R}
+\end{equation}
+where $\hu_r$ is the larger root of $\eqref{E1_u}$.
+\end{lemma}
+
+
+Time Delay Stability Results:
+%%% Delay, E0
+\begin{lemma}
+Result \ref{result_E0_nodelay} holds when there is a delay, i.e. E0 is unstable except along the $r = 0$ nullcline.
+\end{lemma}
+
+\begin{lemma}
+When there is a time delay, E1 is unstable under the same conditions as in the situation with no time delay (Result \ref{E1_nodelay}).
+\end{lemma}
+
+Irrespective of time delay:
+\begin{lemma}
+The resource depletion constant $\beta$ does not affect the social-learning cut-off $s^*$ that maximizes $\hN_p$ for any combination of the parameters $\mu, \delta, R$.
+\end{lemma}
+
+\begin{lemma}
+If $s = 0$, i.e. all predators are individual learners, then social learning evolves if $R < \delta$.
+\end{lemma}
+
+\end{document}

@@ -1,0 +1,371 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{PopDyn}
+\externaldocument{PopDynSocialLearning}
+
+\begin{document}
+\appendix
+\renewcommand{\thesection}{A\arabic{section}}
+\numberwithin{equation}{section}
+\setcounter{equation}{0}
+\numberwithin{figure}{section}
+\setcounter{figure}{0}
+\numberwithin{table}{section}
+\setcounter{table}{0}
+
+ 
+ 
+ 
+ 
+ \section{Calculation of mean population fitness} \label{Derive_W}
+ $W$, the mean population fitness, is the sum of the right sides of Eqns. \eqref{recursions}, i.e.,
+\begin{align*}
+W &= 1 + r(\tilde{u}_r + \tilde{x}_r)+ R(\tilde{u}_R + \tilde{x}_R), \\
+\intertext{and from \eqref{L_u}, \eqref{L_x}, and \eqref{rec_juveniles},}
+W&= 1 + r \lrb{u L_u(p_r,r) + x \lrp{ L_u(p_r,r) + \dk p_r + \dpc \frac{r}{r+R} }} \\
+& \hspace{1cm}+ R\lrb{u(1 - L_u(p_r,r)) + x \lrp{ 1 - L_u(p_r,r) - \dk p_r - \dpc \frac{r}{r+R} }}.
+\end{align*}
+Since $u + x = 1$,
+\begin{align} \label{eq_W_all_app}
+W&= 1 + r \lrb{L_u(p_r,r) + x \lrp{ \dk p_r + \dpc \frac{r}{r+R}} } \notag \\
+&\hspace{1cm} + R \lrb{ 1 - L_u(p_r,r) -x \lrp{ \dk p_r + \dpc \frac{r}{r+R} }}, \\
+ &= 1 + R + (r - R) \lrb{ L_u(p_r,r)+ x \lrp{ \dk p_r + \dpc \frac{r}{r+R}} } \notag.
+\end{align}
+
+\section{Proof of Result \ref{Order_R_delta_r}}. \label{Proof_Order_R_delta_r}
+
+We first prove part (i). From (\ref{sys_allB}a), $W - \delta = 1$ because $\hN_p > 0$. Then from Eqn. \eqref{before_delta_eq}, $\delta = R$ is only possible if $L(\hu_r,\hr) = 0$ or $\hr = R$. If $L(\hu_r,\hr) = 0$, assuming $\pc > 0$, then from \eqref{L_u}, $\hr = K\hu_r = 0$.
+
+Parts (ii) and (iii) follow from Eq. \eqref{delta_eq} and the requirement that $0 \leq L(\hu_r,\hr) \leq 1$ because $L(\hu_r,\hr)$ is a probability.
+\subsection{Note on the Rare Case of $\hr = R = \delta$}
+
+Note that in the rare case of $\hr = R = \delta$, from \eqref{sys_allB}b
+$$
+(1 + \delta)\hu_r = L(\hu_r, \hr)(1+\delta)
+$$
+ so 
+ $$
+\hu_r = L(\hu_r,\hr) = K \hu_r + \pc/2
+$$
+and thus
+\begin{equation} \label{result3_4}
+\hu_r = \frac{1}{2} \lrp{ \frac{\pc}{1-K} }.
+\end{equation}
+
+If there is no time delay, i.e. the predation term is $P(r,u_r) = L_{total}$ as defined in \eqref{L_total}, and $\hr = \delta$, then the equilibrium population size is
+$$
+\hN_p = \frac{1-\delta}{\beta L(\hu_r, \hr)}
+$$
+which simplifies to
+$$
+\hN_p = \frac{2(1-\delta)(1-K)}{\beta \pc}.
+$$
+If there is a time delay, i.e. the predation term is $p_r = u_r$, and $\hr = \delta$, then because $\hr = 1 - \beta \hN_p \hu_r$, the equilibrium forager population size is
+$$
+\hN_p = \frac{1 - \delta}{\beta \hu_r},
+$$
+which, from \eqref{result3_4}, simplifies to
+\begin{equation}\label{hNp_delay}
+\hN_p = \frac{2(1-\delta)(1-K)}{\beta \pc}.
+\end{equation}
+
+\section{Proof of Result \ref{Result_eq_Rlessthandelta} } \label{Proof_eq_Rlessthandelta}
+
+If $\hr > 0$, then since $0 < L_u(\hu_r,\hr) \leq 1$ and $R < \delta$, from \eqref{delta_eq} we must have $\hr \geq \delta$.
+Substituting \eqref{delta_eq} for $L_u(\hu_r, \hr)$ and $W = 1 + \delta$ into (\ref{sys_allB}b),
+\begin{equation}\label{hu_r}
+\hu_r = L_u(\hu_r, \hr) \frac{1 + \hr}{1 + \delta} = \frac{(\delta - R)(1+\hr)}{(\hr-R)(1+\delta)}.
+\end{equation}
+Since $\hr \geq \delta > R$, \eqref{hu_r} is legitimate, i.e. $0 < \hu_r \leq 1$, if
+%$$
+%\frac{(\delta - R)}{(\hr-R)} \leq \frac{1 + \delta}{1+\hr}
+%$$
+%which can be rearranged and simplified to
+$$
+(\delta - \hr)(1 + R) \leq 0
+$$
+which is true because $\hr \geq \delta$.
+
+Thus at the equilibrium, from Eqns. \eqref{L_u} and \eqref{delta_eq},
+\begin{align} \label{beforeQ_r}
+ K \frac{(\delta - R)(1+r)}{(r-R)(1+\delta)} + \pc \frac{r}{r+R} = \frac{\delta - R}{r-R}.
+\end{align}
+Equation \eqref{beforeQ_r} can be rewritten as $Q_r(r) = 0$, where 
+\small
+\begin{equation} \label{app_Q_r}
+Q_r(r) = r^2 \lrb{\pc + \frac{K(\delta-R)}{(1+\delta)} } +r \lrb{ (\delta-R) \lrp{ \frac{K(1+R)}{1+\delta}-1}- R \pc} -R(\delta-R)\lrp{1 - \frac{K}{1+\delta}},
+\end{equation}
+\normalsize
+which we write as $Q_r(r) = Ar^2 + Br + C$.
+Since 
+$$
+Q_r(0) = C = -R(\delta-R) \lrp{1 - \frac{K}{1+\delta}} < 0,
+$$
+there is an equilibrium $\hr \geq \delta$ if $Q_r(1) \geq 0$ and $Q_r(\delta) \leq 0$, where
+\begin{equation} \label{Q_r_1}
+Q_r(1) = A + B + C = \pc (1 - R) + (\delta - R)(1 +R) \lrp{\frac{2K}{1+\delta}-1} 
+\end{equation}
+
+and \red{(I showed all my steps so it's easier to check)}
+\begin{align} \label{Q_r_delta}
+Q_r(\delta) &= A \delta^2 + B \delta + C \\
+&= (\delta-R) \lrb{\frac{K \delta^2}{1+\delta} + \delta \lrp{ \frac{K(1+R)}{1+\delta} - 1 } - R \lrp{1 - \frac{K}{1+\delta}} } + \delta^2 \pc - R \pc \delta \notag \\
+&= (\delta-R) \lrb{ \frac{K\delta^2}{1+\delta} - (R + \delta) \lrp{1 - \frac{K}{1+\delta}} + \frac{KR \delta}{1+\delta} + \pc \delta } \notag \\
+&= (\delta-R) \lrb{ (\delta + R) \lrp{ \frac{K\delta}{1+\delta} - 1 + \frac{K}{1+\delta} } + \pc \delta } \notag \\
+&= (\delta - R) \lrb{ (\delta + R) \lrp{ \frac{K\delta + K}{1+\delta} - 1} + \pc \delta } \notag \\
+&= (\delta-R) \lrb{(\delta+R)(K-1) + \pc \delta} \notag \\
+&= (\delta - R) \lrb{ \delta(K + \pc - 1) + R(K-1)} \notag \\
+&= (\delta - R) \lrb{- \pw \delta + R(K - 1)}.
+\end{align}
+However, $Q_r(\delta) \leq 0$ because $(\delta - R) > 0$ and $- \pw \delta + R(K-1) \leq 0$. Thus there is an equilibrium $\delta \leq \hr \leq 1$ if $Q_r(1) \geq 0$.
+
+To complete the proof, we must show there is a legitimate equilibrium predator population size $\hN_p$. No time delay entails $\hr = 1 - \beta \hN_p L_u(\hu_r, \hr)$ and a time delay entails $\hr = 1 - \beta \hN_p \hu_r$.  If there is no time delay and $\beta > 0$,
+\begin{equation} \label{app_hNp_nodelay}
+\hN_p = \frac{(1 - \hr)(\hr-R)}{\beta(\delta-R)},
+\end{equation}
+where $L(\hu_r, \hr)$ is given by \eqref{delta_eq} and $\hr$ is the larger root of $Q_r(r)$.
+
+If there is a time delay and $\beta > 0$,
+\begin{equation}
+\hN_p = \frac{1 - \hr}{\beta \hu_r},
+\end{equation}
+or from \eqref{hu_r}
+\begin{equation}
+\hN_p = \frac{(1-\hr^2)(\delta-R)}{\beta (\hr-R)(1+\delta)}.
+\end{equation}
+
+\section{Proof of Result \ref{Result_Rgreaterthandelta}}\label{Proof_Rgreaterthandelta}
+
+If $R > \delta$, then we know $\hr \leq \delta < R$, so $\hr > 0$ exists if $Q_r(r)$ has at least one root between $r = 0$ and $r = \delta$. 
+Note that
+$$
+Q_r(0) = C = -R(\delta - R) \lrp{1 - \frac{K}{1+\delta}} \geq 0,
+$$
+and from \eqref{Q_r_delta}, $Q_r(\delta) \geq 0$ because $R> 0$. Thus if $A < 0$, i.e. the parabola of $Q_r(r)$ opens down, there is no equilibrium with $\hr > 0$. 
+
+On the other hand, if the parabola $Q_r(r)$ points upward, i.e. $A > 0$, then $Q_r(r)$ can only have roots within the range $0 < \hr \leq \delta$ if $Q_r'(0) = B < 0$ and $Q_r'(\delta)  = 2A \delta + B> 0$.
+The roots of $Q_r(r)$ are
+$$
+\hr = \frac{-B \pm \sqrt{ B^2 - 4 AC}}{2A}.
+$$
+where, if the discriminant $B^2 -4AC > 0$, then there are two $\hr > 0$ equilibria. If the discriminant is instead nonnegative, then there are no real roots of $Q_r(r)$. 
+
+\section{Proof of Result \ref{Result_EqPreyExtinction}} \label{Proof_EqPreyExtinction}
+
+Given $\pc > 0$, if $\hr = 0$ then at equilibrium $W u_r= K u_r$, so either $W = K$ or $\hu_r = 0$. Say $W = K$ and $\hu_r \neq 0$. Then from \eqref{W_allB},
+$$
+K = 1 + R(1-K u_r)
+$$
+which is a contradiction because $0 \leq K < 1$, leaving us with $\hu_r = \hr = 0$. 
+
+Next, we aim to show that if $\hu_r = \hr = 0$, then $\hN_p = 0$ if $R < \delta$. The mean population fitness is $W = 1 + R$ because $\hu_r = \hr = 0$. Since $R < \delta$, $W \neq 1 + \delta$, and thus the only possible equilibrium is $\hN_p = 0$.
+
+For the last part of the proof, if $R > \delta$, then $N_p$ would increase infinitely because $W > 1 + \delta$, so $N_p' > N_p$.
+
+\section{Proof of Result \ref{Result_EqPredExtinct}} \label{Proof_EqPredExtinct}
+From (\ref{sys_allB}b), at this equilibrium $\hw \hu_r = 2 L(\hu_r,\hr)$ where $L(\hu_r,\hr) = K \hu_r + \frac{\pc}{1+R}$ and, from \eqref{W_allB}, $\hw = 1+R+(1-R)L(\hu_r,\hr)$. Then
+\begin{align} 
+u_r \lrb{1 + R + (1-R)\lrp{Ku_r + \frac{\pc}{1+R}}} = 2 \lrp{K u_r + \frac{\pc}{1+R}} \notag \\
+\intertext{or}
+Q_u(u_r) = u_r^2 K(1-R) + u_r\lrb{ 1+R + (1-R) \frac{\pc}{1+R} -2K} - 2 \frac{\pc}{1+R} = 0. \label{E1_u}
+\end{align}
+Thus $\hu_r$ is the larger root of $Q_u(u_r)$ because $K(1-R)>0$, $Q_u(0) < 0$, and
+$$
+Q_u(1) = -(1-R)\lrp{K+\frac{\pc}{1+R}} (1+R) > 0.
+$$
+
+\section{Derivation of Internal Stability Jacobian} \label {app_Jstar_derive}
+
+Near the equilibrium $(\hN_p, \hu_r, \hr)$,
+\begin{align*}
+L_u(\hu_r + \du,\hr+\dr) &= K( \hu_r + \du) + \frac{\hr+\dr}{\hr+\dr+R} \pc \\
+&= L_u(\hu_r, \hr) + \D_L
+\end{align*}
+where
+\begin{equation}\label{D_L}
+\D_L \approx K \du + \frac{R \pc \dr}{(\hr + R)^2}
+\end{equation}
+because
+$$
+\frac{\hr + \dr}{\hr + \dr + R } \approx (\hr + \dr) \lrp{1 - \frac{\dr}{\hr + R}} \lrp{\frac{1}{\hr + R}} \approx \frac{\hr}{\hr + R} + \frac{\dr}{\hr + R} \lrp{1 - \frac{\hr}{\hr + R}}
+$$
+and $1 - \frac{\hr}{\hr + R} = \frac{R}{\hr + R}$. The mean population fitness near the equilibrium is
+\begin{align}
+W + \dw &= 1 + R + (\hr + \dr - R) L_u(\hu_r + \du,\hr+dr)\notag \\
+\dw & \approx \D_L (\hr - R) + \dr L_u(\hu_r, \hr) \label{dw_dl}
+\intertext{which simplifies to}
+\dw &= K (\hr-R) \du + \dr \lrb{ L(\hu_r, \hr) + \frac{R \pc (\hr - R)}{(\hr + R)^2} } \label{dw_simplified}.
+\end{align}
+
+The predator population size near the  equilibrium $\hN_p$ is
+$$
+\hN_p + \dnp' = (\hN_p + \dnp)(\hw + \dw - \delta) 
+$$
+so
+\begin{align} \label{D_N}
+\dnp' &\approx \D_W \hN_p + \dnp (W - \delta)  \notag\\
+&=  \dnp (\hw - \delta)+ \hN_p \lrc{ K(\hr - R) \du + \dr \lrb{ L(\hu_r, \hr) + \frac{R \pc (\hr - R)}{(\hr + R)^2} }}.
+\end{align}
+
+
+The frequency of predators exploiting the CP near the equilibrium is
+\begin{align*}
+\hu_r + \du' &= \frac{1}{\hw + \dw} (L(\hu_r, \hr) + \D_L)(1 + \hr + \dr) \\
+\intertext{so}
+\hu_r + \du' & \approx \frac{1}{\hw} \lrp{1 - \frac{\dw}{\hw}} \lrb{ L(\hu_r, \hr)(1+\hr)  + \dr L(\hu_r, \hr) + \D_L (1+\hr)}\\
+&= \lrp{1 - \frac{\dw}{\hw}} \lrb{ \hu  + \dr \frac{L(\hu_r, \hr)}{\hw} + \D_L \frac{(1+\hr)}{\hw}},\\
+\intertext{and thus the perturbation from equilibrium is}
+\du' &\approx \dr \frac{L(\hu_r, \hr)}{\hw} + \D_L \frac{(1+\hr)}{\hw} - \frac{\hu_r}{\hw} \dw,
+\end{align*}
+which, after substituting \eqref{D_L} for $\D_L$ and $\hw = 1 + \delta$, becomes
+\begin{align} \label{D_u}
+\du'  &= \du \frac{K}{\hw} \lrp{1 + \hr - \hu_r(\hr-R)} \notag \\
+&\ \ + \dr\lrc{\frac{L(\hu_r, \hr)}{\hw}(1-\hu_r) + \frac{\pc R}{\hw(\hr+R)^2} \lrb{1 + \hr - \hu_r(\hr-R)}}
+\end{align}
+
+\subsubsection{Internal Stability, no time delay}
+
+The CP relative density near equilibrium is
+\begin{align*}
+\hr + \dr' &= \frac{(\hr + \dr)\lrb{2 - \beta (\hN_p+ \dnp)(L(\hu_r, \hr) + \D_L)}}{1 + \hr + \dr} \\
+&\approx \frac{(\hr + \dr) \lrp{2 - \beta \hN_pL(\hu_r, \hr) -\beta \dnp L(\hu_r, \hr) - \beta \hN_p\D_L}}{1 + \hr + \dr}.
+\end{align*}
+To simplify, note that $\frac{1}{1 + \hr + \dr} \approx \frac{1}{1 + \hr} \lrp{1 - \frac{\dr}{1 + \hr}}$. Then
+\begin{align*}
+\hr + \dr' &= \frac{\hr (2 - \beta \hN_p L(\hu_r,\hr)-\hr \beta \lrp{ L(\hu_r,\hr) \dnp + \hN_p \D_L} + \dr \lrp{2 - \beta \hN_p L(\hu_r,\hr)}}{1+\hr} \lrp{1 - \frac{\dr}{1+\hr}}. 
+\end{align*}
+\red{Additional steps are shown in red:
+\begin{align*}
+\hr + \dr' &= \lrp{ \hr  - \frac{\hr \beta (\dnp L(\hu_r, \hr) + \hN_p\D_L)}{1+\hr} + \dr \frac{2 - \beta \hN_p L(\hu_r,\hr)}{1+\hr} } \lrp{1 - \frac{\dr}{1+\hr}} \\
+\dr' &\approx -\dr \frac{\hr}{1+\hr} - \frac{\hr \beta (\dnp L(\hu_r, \hr) + \hN_p \D_L)}{1+\hr} + \dr \frac{2 - \beta \hN_p L(\hu_r,\hr)}{1+\hr}, \\
+\end{align*}}
+and substituting \eqref{D_L} for $\D_L$ gives
+\small
+\begin{equation} \label{D_r_nodelay}
+\dr'  \approx - \dnp \frac{\hr \beta L(\hu_r, \hr)}{1+\hr} - \du \frac{K\hN_p\hr \beta}{1+\hr} + \lrp{\frac{2-\beta \hN_p L(\hu_r,\hr)-\hr}{1+\hr} - \frac{\hN_p\hr \beta R \pc}{(1+\hr)(\hr+R)^2} } \dr .
+\end{equation}
+\normalsize
+
+Using Eqs \eqref{D_N}, \eqref{D_u}, and \eqref{D_r_nodelay}, the local stability matrix for the equilibrium $\hN_p, \hu_r, \hr$ is of the form
+\begin{equation} \label{Jstar_nodelay}
+J^* = \begin{pmatrix}
+\hw-\delta & a & b \\
+0 & c & d \\
+e & f & g
+\end{pmatrix},
+\end{equation}
+where $a$, $b$ are the coefficients of $\du$ and $\dr$, respectively, from \eqref{D_N}, $c$ and $d$ are the coefficients of $\du$ and $\dr$, respectively, from \eqref{D_u}, and $e, f,$ and $g$ are the coefficients of $\dnp, \du,$ and $\dr$, respectively, from \eqref{D_r_nodelay}.
+
+\section{Proof of Result \ref{result_E0_nodelay} } \label{Proof_E0_nodelay}
+At E0, i.e. $\hN_p = \hr = \hu_r = 0$, the Jacobian is
+\begin{equation}
+J^*_{E0} = \begin{pmatrix}
+\hw - \delta & 0 & 0 \\
+0 & \frac{K}{\hw} & \frac{\pc}{\hw R} \\
+0 & 0 & 2
+\end{pmatrix}
+\end{equation}
+where from \eqref{W_allB} $\hw = 1 + R$. The eigenvalues are thus $1 + R - \delta, \frac{K}{1+R},2$, so E0 is unstable.
+
+However, consider the situation in which the predator population has depleted the CP, i.e. the system has $r = 0$. Then along this null-cline, if $R < \delta$, then E0 is stable because from \eqref{W_allB}, $W = 1 + R(1 - L(u_r,0)) < 1 + \delta$ and thus $N' < N$. 
+
+Now say we start from a point off the nullcline $r = 0$, where $N_p$, $u_r$, and $r$ are very small. Then from \eqref{r_allB},
+$$
+\frac{r'}{r} = \frac{2 - \beta N_p P(r,u_r)}{1+r} \approx 2 
+$$
+so $r' > r$.
+
+For the second part of the proof, we look at the Jacobian $J^*$ from \eqref{Jstar_nodelay} at some point alone the nullcline $r = 0$ for $R < \delta$. Here,
+\begin{equation} \label{Jstar_nodelay_r0nullcline}
+J^*(r=0) = \begin{pmatrix}
+W - \delta & a & b \\
+0 & c & d \\
+0 & 0 & g
+\end{pmatrix}
+\end{equation}
+because $e = f = 0$. The eigenvalues are $W - \delta$, $c$, and $g$, where $W - \delta < 1$ because $R < \delta$,
+\begin{equation}
+c = \frac{K(1 + u_r R}{W}= \frac{K(1+u_rR)}{1+R(1-Ku_r)} 
+\end{equation}
+is less than one if $R > - \frac{1-K}{1-2K u_r}$, and
+\begin{equation}
+g = 2 - \beta N_p K u_r
+\end{equation}
+is less than one if $1 - \beta N_p K u_r < 0$.
+
+\section{Proof of Result \ref{E1_nodelay}} \label{Proof_E1_nodelay}
+At E1, i.e. $\hN_p = 0$, $\hr = 1$, and $\hu_r$ is the larger root of \eqref{E1_u}, the Jacobian is
+$$
+J^*_{E1} = \begin{pmatrix}
+\hw - \delta & 0 & 0 \\
+0 & \frac{K}{\hw}(2 - \hu_r (1-R)) & \frac{L(\hu_r,1)}{\hw}(1-\hu_r) + \frac{\pc R (2 - \hu_r(1-R))}{\hw(1+R)^2} \\
+- \frac{1}{2} \beta L(\hu_r,1) & 0 & \frac{1}{2} 
+\end{pmatrix}
+$$
+with eigenvalues $\lambda_1 = \hw - \delta, \lambda_2 = \frac{K}{\hw}(2 - \hu_r(1-R)),$ and $\lambda_3 = 1/2$. From \eqref{W_allB},
+$$
+\hw = 1 + R + (1-R)L(\hu_r,1)
+$$
+so $\lambda_1 < 1$ if $R-\delta + (1-R) L(\hu_r,1) < 0$. Furthermore, $\lambda_2 < 1$ if
+$$
+K(2 - \hu_r(1-R)) < 1 + R + (1-R)L(\hu_r,1).
+$$
+which can be written as
+$$
+2K (1 - \hu_r (1-R)) < 1 + R + (1-R) \frac{\pc}{1+R}.
+$$
+\section{Derivation of Internal Stability Jacobian with Time Delay} \label{App_Jac_TimeDelay}
+
+The equations for $\du'$ and $\dnp'$ are the same, but equation \eqref{D_r_nodelay} changes. Instead,
+$$
+\hr + \dr'  \approx \lrp{ \hr - \frac{\hr \beta (\dnp \hu_r + \hat{N}_p \du) }{1+\hr} + \dr \frac{2 - \beta \hN_p \hu_r}{1+\hr} } \lrp{1 - \frac{\dr}{1+\hr}}
+$$
+which simplifies to,
+\begin{equation} \label{D_r_delay}
+\dr' \approx \dnp \lrp{- \frac{\hr \beta \hu_r}{1+\hr}} + \du \lrp{ - \frac{\hr \beta \hN_p}{1+\hr}} + \dr \lrp{ \frac{2 - \beta \hN_p \hu_r - \hr}{1+\hr}}
+\end{equation}
+
+The Jacobian formed by Eqs \eqref{D_N}, \eqref{D_u}, and \eqref{D_r_delay}, is of the form
+\begin{equation}
+J^* = \begin{pmatrix} \label{Jstar_delay}
+\hw-\delta & a & b \\
+0 & c & d \\
+e & f & g,
+\end{pmatrix}
+\end{equation}
+where we redefine $a, b, c, d, e, f,$ and $g$ to be
+\begin{align} \label{Jstar_constants_delay}
+a &= \hN_p K, &b = \hN_p \lrb{L(\hu_r,\hr) + \frac{R \pc(\hr-R)}{(\hr+R)^2} }, \\
+c&= \frac{K}{\hw} \lrp{1 + \hr - \hu_r(\hr-R)}, & \\
+d &= \frac{L(\hu_r,\hr)}{\hw}(1-\hu_r) + \frac{\pc R \lrb{1+\hr - \hu_r(\hr-R)}}{\hw(\hr+R)^2}, &\\
+e& = \frac{- \hr \beta \hu_r}{1+\hr} & f = \frac{- \beta \hr \hN_p}{1+\hr}, \\
+ g &=  \lrp{ \frac{2-\beta \hN_p \hu_r - \hr}{1+\hr}}.
+\end{align}
+For equilibrium E2, if $\hN_p > 0$, then $\hN_p$ is defined in \eqref{hNp_delay}, $\hu_r$ is \eqref{hu_r}, $\hr$ is the solution to \eqref{Q_r}, and $\hw = 1 + \delta$. The eigenvalues are defined using equations \eqref{evals_constants} and \eqref{Jstar_evals}, where we substitute the new definitions of $a,b,c,d,e,f$, and $g$ from \eqref{Jstar_constants_delay} into \eqref{evals_constants}. 
+
+\section{External Stability Jacobian} \label{App_External_Stability}
+
+Near the equilibrium $\hN_p,\hu_r,\hr$,
+\begin{subequations}
+\begin{align}
+\dx{r}' &\approx \frac{1}{\hw} \dx{r} L_x(\hu_r, \hr)(1+\hr) \\
+\dx{R}' &\approx \frac{1}{\hw} \dx{R} (1 - L_x(\hu_r,\hr))(1+R)
+\end{align}
+\end{subequations}
+so that the Jacobian determining local stability is of the form
+\begin{equation}
+J_x = \begin{pmatrix}
+a_x & a_x \\
+b_x & b_x
+\end{pmatrix}
+\end{equation}
+for $a_x =\frac{1}{\hw} L_x(\hu_r,\hr)(1+\hr)$ and $b_x =\frac{1}{\hw} (1 - L_x(\hu_r,\hr))(1+R)$. There is one nonzero eigenvalue for this matrix, and it is
+\begin{equation}
+\lambda_x = a_x + b_x = \frac{1}{\hw}\lrb{1+R+ L_x(\hu_r,\hr)(\hr-R)}
+\end{equation}
+which simplifies to
+\begin{equation}
+\lambda_x = 1 + \frac{1}{\hw} \lrp{ \dk \hu_r + \dpc \frac{\hr}{\hr + R}}(\hr-R).
+\end{equation}
+
+
+\end{document}
