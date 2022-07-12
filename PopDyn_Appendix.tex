@@ -33,7 +33,7 @@ W&= 1 + r \lrb{L_u(p_r,r) + x \lrp{ \dk p_r + \dpc \frac{r}{r+R}} } \notag \\
 
 \section{Proof of Result \ref{Order_R_delta_r}}. \label{Proof_Order_R_delta_r}
 
-We first prove part (i). From (\ref{sys_allB}a), $W - \delta = 1$ because $\hN_p > 0$. Then from Eqn. \eqref{before_delta_eq}, $\delta = R$ is only possible if $L(\hu_r,\hr) = 0$ or $\hr = R$. If $L(\hu_r,\hr) = 0$, assuming $\pc > 0$, then from \eqref{L_u}, $\hr = K\hu_r = 0$.
+We first prove part (i). From (\ref{sys_allB}a), $W - \delta = 1$ because $\hN_p > 0$. Then from Eqn. \eqref{before_delta_eq}, $\delta = R$ is only possible if $L(\hu_r,\hr) = 0$ or $\hr = R$. If $L(\hu_r,\hr) = 0$, assuming $\pc > 0$, $\hr = K\hu_r = 0$.
 
 Parts (ii) and (iii) follow from Eq. \eqref{delta_eq} and the requirement that $0 \leq L(\hu_r,\hr) \leq 1$ because $L(\hu_r,\hr)$ is a probability.
 \subsection{Note on the Rare Case of $\hr = R = \delta$}
@@ -87,7 +87,7 @@ which is true because $\hr \geq \delta$.
 
 Thus at the equilibrium, from Eqns. \eqref{L_u} and \eqref{delta_eq},
 \begin{align} \label{beforeQ_r}
- K \frac{(\delta - R)(1+r)}{(r-R)(1+\delta)} + \pc \frac{r}{r+R} = \frac{\delta - R}{r-R}.
+L(\hu_r, \hr) = K \frac{(\delta - R)(1+r)}{(r-R)(1+\delta)} + \pc \frac{r}{r+R} = \frac{\delta - R}{r-R}.
 \end{align}
 Equation \eqref{beforeQ_r} can be rewritten as $Q_r(r) = 0$, where 
 \small
@@ -136,7 +136,7 @@ or from \eqref{hu_r}
 \section{Proof of Result \ref{Result_Rgreaterthandelta}}\label{Proof_Rgreaterthandelta}
 
 If $R > \delta$, then we know $\hr \leq \delta < R$, so $\hr > 0$ exists if $Q_r(r)$ has at least one root between $r = 0$ and $r = \delta$. 
-Note that
+Note that from \eqref{Q_r}
 $$
 Q_r(0) = C = -R(\delta - R) \lrp{1 - \frac{K}{1+\delta}} \geq 0,
 $$
@@ -151,13 +151,13 @@ where, if the discriminant $B^2 -4AC > 0$, then there are two $\hr > 0$ equilibr
 
 \section{Proof of Result \ref{Result_EqPreyExtinction}} \label{Proof_EqPreyExtinction}
 
-Given $\pc > 0$, if $\hr = 0$ then at equilibrium $W u_r= K u_r$, so either $W = K$ or $\hu_r = 0$. Say $W = K$ and $\hu_r \neq 0$. Then from \eqref{W_allB},
+Given $\pc > 0$, if $\hr = 0$ then at equilibrium, from \eqref{L_u}, $W u_r= K u_r$, so either $W = K$ or $\hu_r = 0$. Say $W = K$ and $\hu_r \neq 0$. Then from \eqref{W_allB},
 $$
 K = 1 + R(1-K u_r)
 $$
 which is a contradiction because $0 \leq K < 1$, leaving us with $\hu_r = \hr = 0$. 
 
-Next, we aim to show that if $\hu_r = \hr = 0$, then $\hN_p = 0$ if $R < \delta$. The mean population fitness is $W = 1 + R$ because $\hu_r = \hr = 0$. Since $R < \delta$, $W \neq 1 + \delta$, and thus the only possible equilibrium is $\hN_p = 0$.
+Next, if $\hu_r = \hr = 0$, then $\hN_p = 0$ if $R < \delta$. The mean population fitness is $W = 1 + R$ because $\hu_r = \hr = 0$. Since $R < \delta$, $W \neq 1 + \delta$, and thus the only possible equilibrium is $\hN_p = 0$.
 
 For the last part of the proof, if $R > \delta$, then $N_p$ would increase infinitely because $W > 1 + \delta$, so $N_p' > N_p$.
 
@@ -168,9 +168,9 @@ u_r \lrb{1 + R + (1-R)\lrp{Ku_r + \frac{\pc}{1+R}}} = 2 \lrp{K u_r + \frac{\pc}{
 \intertext{or}
 Q_u(u_r) = u_r^2 K(1-R) + u_r\lrb{ 1+R + (1-R) \frac{\pc}{1+R} -2K} - 2 \frac{\pc}{1+R} = 0. \label{E1_u}
 \end{align}
-Thus $\hu_r$ is the larger root of $Q_u(u_r)$ because $K(1-R)>0$, $Q_u(0) < 0$, and
+Thus $\hu_r$ is the positive root of $Q_u(u_r)$ because $K(1-R)>0$, $Q_u(0) < 0$, and
 $$
-Q_u(1) = -(1-R)\lrp{K+\frac{\pc}{1+R}} (1+R) > 0.
+Q_u(1) = (1+R)(1-K) - \pc > R \pc > 0.
 $$
 
 \section{Derivation of Internal Stability Jacobian} \label {app_Jstar_derive}
@@ -178,7 +178,7 @@ $$
 Near the equilibrium $(\hN_p, \hu_r, \hr)$,
 \begin{align*}
 L_u(\hu_r + \du,\hr+\dr) &= K( \hu_r + \du) + \frac{\hr+\dr}{\hr+\dr+R} \pc \\
-&= L_u(\hu_r, \hr) + \D_L
+&= L_u(\hu_r, \hr) + \D_L,
 \end{align*}
 where
 \begin{equation}\label{D_L}
@@ -222,9 +222,9 @@ which, after substituting \eqref{D_L} for $\D_L$ and $\hw = 1 + \delta$, becomes
 &\ \ + \dr\lrc{\frac{L(\hu_r, \hr)}{\hw}(1-\hu_r) + \frac{\pc R}{\hw(\hr+R)^2} \lrb{1 + \hr - \hu_r(\hr-R)}}
 \end{align}
 
-\subsubsection{Internal Stability, no time delay}
+\subsection{Internal Stability, no time delay}
 
-The CP relative density near equilibrium is
+The CP density near equilibrium is
 \begin{align*}
 \hr + \dr' &= \frac{(\hr + \dr)\lrb{2 - \beta (\hN_p+ \dnp)(L(\hu_r, \hr) + \D_L)}}{1 + \hr + \dr} \\
 &\approx \frac{(\hr + \dr) \lrp{2 - \beta \hN_pL(\hu_r, \hr) -\beta \dnp L(\hu_r, \hr) - \beta \hN_p\D_L}}{1 + \hr + \dr}.
